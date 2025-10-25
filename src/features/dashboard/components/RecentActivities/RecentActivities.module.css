@@ -1,0 +1,51 @@
+@import '../../../../styles/_variables.css';
+
+.title {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+}
+
+.activityList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.activityItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.activityItem:not(:last-child) {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.icon {
+  font-size: 1.5rem;
+  background-color: var(--color-primary-light);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.details {
+  flex: 1;
+}
+
+.text {
+  margin: 0 0 0.25rem;
+  color: var(--color-text-primary);
+}
+
+.time {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}

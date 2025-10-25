@@ -1,0 +1,57 @@
+@import '../../../../styles/_variables.css';
+@import '../../../../styles/_responsive.css';
+
+.cardsContainer {
+  display: grid;
+  gap: 1.5rem;
+  /* Default to 2 columns */
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.kpiCard {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.25rem;
+}
+
+.iconWrapper {
+  font-size: 2rem;
+  padding: 0.8rem;
+  border-radius: 50%;
+  background-color: var(--color-primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.textWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.label {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* --- Responsive Styles --- */
+@media screen and (min-width: 1200px) {
+  .cardsContainer {
+    grid-template-columns: repeat(4, 1fr); /* 4 columns on large screens */
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .cardsContainer {
+    grid-template-columns: 1fr; /* 1 column on mobile */
+  }
+}

@@ -1,0 +1,26 @@
+.filterBar {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.filterBar input[type="date"],
+.filterBar select,
+.filterBar input[type="text"] {
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  min-width: 160px;
+}
+
+.filterBar input[type="date"]:focus,
+.filterBar select:focus,
+.filterBar input[type="text"]:focus {
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.08);
+  border-color: #3b82f6;
+}

@@ -1,0 +1,18 @@
+.dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+}
+
+/* Helpful text alignment if using label next to dot */
+.statusWrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  color: #374151;
+}

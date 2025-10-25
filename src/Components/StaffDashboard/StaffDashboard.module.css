@@ -1,0 +1,148 @@
+.dashboard {
+  padding: 24px;
+  background-color: #f9fafb;
+  font-family: 'Inter', sans-serif;
+  color: #111827;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.header h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+.navBtns button {
+  background: #e5e7eb;
+  border: none;
+  margin-left: 8px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.navBtns button:hover {
+  background: #d1d5db;
+}
+
+/* Top Metrics */
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.metricCard {
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+.metricCard h3 {
+  color: #6b7280;
+  font-size: 1rem;
+}
+.metricCard p {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+/* Tables */
+.section {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  margin-bottom: 24px;
+}
+.section h2 {
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table th,
+.table td {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 10px;
+  text-align: left;
+  font-size: 0.95rem;
+}
+.table th {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+.avatar {
+  margin-right: 6px;
+}
+.active {
+  color: #10b981;
+  font-weight: 600;
+}
+.inactive {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+/* Risk Labels */
+.warning {
+  color: #ef4444;
+  font-weight: 600;
+}
+.medium {
+  color: #f59e0b;
+  font-weight: 600;
+}
+.low {
+  color: #10b981;
+  font-weight: 600;
+}
+
+/* Charts */
+.chartsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+@media (min-width: 900px) {
+  .chartsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.chartCard {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Export Buttons */
+.exportSection {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+.exportBtns button {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  margin: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.exportBtns button:hover {
+  background: #2563eb;
+}

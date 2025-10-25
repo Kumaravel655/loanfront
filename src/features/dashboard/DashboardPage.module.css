@@ -1,0 +1,13 @@
+.dashboardContainer {
+    padding: 2rem;
+}
+
+.pageTitle {
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.section {
+    margin-bottom: 2.5rem;
+}

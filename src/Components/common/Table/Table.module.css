@@ -1,0 +1,64 @@
+/* src/components/common/Table/Table.module.css */
+@import '../../../styles/_variables.css';
+@import '../../../styles/_responsive.css';
+
+.tableContainer {
+  width: 100%;
+  overflow-x: auto; /* Key for responsiveness */
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background-color: var(--color-white);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 1rem 1.25rem;
+  text-align: left;
+  white-space: nowrap; /* Prevents text wrapping */
+}
+
+.table thead {
+  background-color: #f9fafb;
+}
+
+.table th {
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.table tbody tr {
+  border-top: 1px solid var(--color-border);
+}
+
+.table tbody tr:hover {
+  background-color: var(--color-primary-light);
+}
+
+/* --- Responsive Styles --- */
+/* On mobile, headers might be hidden and data-labels used instead */
+@media screen and (max-width: 768px) {
+  .table thead {
+    /* Optional: hide the header row on very small screens */
+    /* display: none; */
+  }
+
+  .table td {
+    /* Example of how to use data-label for a stacked layout if needed */
+    /* display: block; */
+    /* text-align: right; */
+  }
+
+  .table td::before {
+    /* content: attr(data-label); */
+    /* float: left; */
+    /* font-weight: bold; */
+  }
+}

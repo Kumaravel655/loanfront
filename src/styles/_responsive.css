@@ -1,0 +1,29 @@
+/*
+  This file defines the standard responsive breakpoints for the application.
+  It should be imported into component-specific CSS modules to apply responsive styles.
+  Example usage in another CSS file:
+  
+  @import './_responsive.css';
+
+  .container {
+    // Default styles for mobile
+  }
+
+  @media screen and (min-width: 768px) {
+    .container {
+      // Styles for tablets and larger
+    }
+  }
+*/
+
+/* No actual CSS rules here, just comments defining the standard breakpoints. */
+
+/* Breakpoints Strategy: Mobile First
+
+  - Default styles (no media query): Apply to all screen sizes, starting with mobile.
+  - min-width: 640px: Styles for small tablets and large phones.
+  - min-width: 768px: Styles for standard tablets.
+  - min-width: 1024px: Styles for small desktops and laptops.
+  - min-width: 1280px: Styles for standard desktops.
+  - min-width: 1536px: Styles for large desktops.
+*/

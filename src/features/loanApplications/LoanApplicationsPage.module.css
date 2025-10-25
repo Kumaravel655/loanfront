@@ -1,0 +1,24 @@
+/* src/features/loanApplications/LoanApplicationsPage.module.css */
+
+.pageContainer {
+  padding: 2rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.error {
+  color: #D0021B; /* Using a variable from _variables.css would be better */
+  padding: 1rem;
+  text-align: center;
+}

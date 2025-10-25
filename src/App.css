@@ -1,0 +1,33 @@
+@import './styles/_responsive.css';
+
+.app-layout {
+  display: flex;
+}
+
+.main-content {
+  flex-grow: 1;
+  /* Adjust margin-left to match the sidebar's width */
+  margin-left: 260px;
+  display: flex;
+  flex-direction: column;
+  transition: margin-left 0.3s ease;
+}
+
+.page-content {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+/* --- Responsive Styles --- */
+/* Match the sidebar's collapsed state */
+@media screen and (max-width: 768px) {
+  .main-content {
+    margin-left: 80px; /* Width of collapsed sidebar */
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .main-content {
+    margin-left: 0; /* Sidebar is hidden */
+  }
+}

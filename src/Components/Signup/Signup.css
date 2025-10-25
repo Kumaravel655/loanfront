@@ -1,0 +1,114 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+
+.signup-container {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #8ec5fc, #e0c3fc);
+  font-family: "Poppins", sans-serif;
+}
+
+.signup-card {
+  width: 380px;
+  backdrop-filter: blur(12px);
+  background: rgba(19, 9, 9, 0.2);
+  border-radius: 16px;
+  padding: 40px 35px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #2f2b2b;
+  text-align: center;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.signup-card h2 {
+  margin-bottom: 25px;
+  font-weight: 600;
+  color: #130f0f;
+  letter-spacing: 1px;
+}
+
+.input-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 18px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 10px 12px;
+  transition: all 0.3s ease;
+}
+
+.input-box:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.icon {
+  margin-right: 10px;
+  color: #2a2727cc;
+  font-size: 18px;
+}
+
+.input-box input,
+.input-box select {
+  flex: 1;
+  border: none;
+  background: none;
+  outline: none;
+  color: #282323;
+  font-size: 15px;
+}
+
+.input-box input::placeholder,
+.input-box select {
+  color: #352f2f;
+}
+
+.input-box select {
+  background: transparent;
+  appearance: none;
+  color: #181616;
+  cursor: pointer;
+}
+
+.signup-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #4c6ef5, #7950f2);
+  color: #211f1f;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.signup-btn:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #364fc7, #5f3dc4);
+}
+
+.bottom-text {
+  margin-top: 18px;
+  color: #f0f0f0;
+  font-size: 14px;
+}
+
+.bottom-text a {
+  color: #fff;
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

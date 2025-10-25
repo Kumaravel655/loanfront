@@ -1,0 +1,138 @@
+.dashboardContainer {
+  display: flex;
+  background-color: #f9fafb;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+  background-color: #1f2937;
+  color: white;
+  width: 250px;
+  padding: 20px;
+  transition: width 0.3s ease;
+  overflow: hidden;
+}
+.closed {
+  width: 0;
+  padding: 0;
+}
+.logo {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 30px;
+  text-align: center;
+}
+.navList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.navItem {
+  display: block;
+  color: #d1d5db;
+  text-decoration: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  transition: background 0.2s ease;
+}
+.navItem:hover {
+  background-color: #374151;
+  color: #fff;
+}
+
+/* Main */
+.mainContent {
+  flex: 1;
+  padding: 24px;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.menuBtn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+.logoutBtn {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.logoutBtn:hover {
+  background-color: #dc2626;
+}
+
+/* Cards */
+.summaryGrid {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+@media (min-width: 768px) {
+  .summaryGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  text-align: center;
+}
+.card h3 {
+  font-size: 1rem;
+  color: #6b7280;
+}
+.card p {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #111827;
+}
+
+/* Table Section */
+.section {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.section h2 {
+  font-size: 1.2rem;
+  margin-bottom: 16px;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table th,
+.table td {
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  padding: 10px;
+  font-size: 0.95rem;
+}
+.table th {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+.table tr:hover {
+  background-color: #f9fafb;
+}
