@@ -1,106 +1,132 @@
-/* Sidebar Container */
 .sidebar {
+  width: 250px;
+  background: linear-gradient(180deg, #2c3e50 0%, #3498db 100%);
+  color: white;
   position: fixed;
-  top: 0;
   left: 0;
+  top: 0;
   height: 100vh;
-  background-color: #0a192f;
-  color: #fff;
-  width: 70px; /* collapsed width */
-  transition: width 0.3s ease;
-  overflow: hidden;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.2);
-  z-index: 1000;
+  transition: transform 0.3s ease, width 0.3s ease;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
 }
 
+/* When sidebar is closed - completely off-screen */
+.sidebar:not(.open) {
+  transform: translateX(-100%);
+}
+
+/* When sidebar is open - visible */
 .sidebar.open {
-  width: 220px; /* expanded width */
+  transform: translateX(0);
 }
 
-/* Toggle Button */
 .toggleBtn {
   position: absolute;
-  top: 15px;
+  top: 20px;
   right: -15px;
-  background-color: #0a192f;
-  color: white;
-  border: none;
-  font-size: 18px;
   width: 30px;
   height: 30px;
+  background: #3498db;
+  border: none;
   border-radius: 50%;
+  color: white;
   cursor: pointer;
-  box-shadow: 0 0 5px rgba(0,0,0,0.3);
-  transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
   z-index: 1001;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: background-color 0.3s ease, right 0.3s ease;
 }
 
 .toggleBtn:hover {
-  background-color: #112240;
+  background: #2980b9;
 }
 
-/* Logo */
+/* Ensure toggle button is visible when sidebar is open */
+.sidebar.open .toggleBtn {
+  right: -15px;
+}
+
 .logo {
+  padding: 30px 20px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
   text-align: center;
-  padding: 20px 0;
 }
 
 .logoLink {
   color: white;
   text-decoration: none;
-  font-weight: 700;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
-/* Nav List */
 .navList {
   list-style: none;
-  padding: 0;
-  margin-top: 20px;
+  padding: 20px 0;
+  margin: 0;
+  flex: 1;
 }
 
 .navItem {
-  margin-bottom: 6px;
+  margin: 5px 0;
 }
 
 .navLink {
   display: flex;
   align-items: center;
-  padding: 10px 16px;
-  color: #d1d5db;
+  padding: 12px 20px;
+  color: white;
   text-decoration: none;
-  transition: background 0.2s ease, color 0.2s ease;
-  white-space: nowrap;
+  transition: all 0.3s ease;
+  border-left: 4px solid transparent;
 }
 
 .navLink:hover {
-  background-color: #112240;
-  color: white;
+  background: rgba(255,255,255,0.1);
+  border-left-color: #3498db;
 }
 
-.active {
-  background-color: #1e3a8a;
-  color: #64ffda;
+.navLink.active {
+  background: rgba(255,255,255,0.2);
+  border-left-color: #e74c3c;
 }
 
-/* Icons and Text */
 .icon {
-  font-size: 20px;
-  margin-right: 12px;
+  font-size: 1.2rem;
+  margin-right: 15px;
+  min-width: 20px;
+  text-align: center;
 }
 
 .text {
-  font-size: 15px;
-  transition: opacity 0.2s ease;
+  white-space: nowrap;
+  opacity: 1;
+  transition: opacity 0.3s ease;
 }
 
-/* Adjust layout for collapsed sidebar */
-.sidebar:not(.open) .text {
-  display: none;
-}
-
-.sidebar:not(.open) .icon {
-  margin-right: 0;
-  text-align: center;
-  width: 100%;
+/* Mobile styles */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 250px;
+    transform: translateX(-100%);
+    z-index: 100;
+  }
+  
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  
+  .toggleBtn {
+    right: -40px;
+    background: #e74c3c;
+  }
+  
+  .sidebar.open .toggleBtn {
+    right: -40px;
+  }
 }
