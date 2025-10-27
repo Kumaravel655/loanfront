@@ -73,6 +73,7 @@ const AssignedLoans = () => {
               <th>Assigned To</th>
               <th>Status</th>
               <th>loan details</th>
+              <th>collect</th>
             </tr>
           </thead>
           <tbody>
@@ -96,6 +97,16 @@ const AssignedLoans = () => {
                     View Details
                   </a>
                 </td>
+                <td>
+                  <a
+                    href={`/agent/collect/${row.loan}`}
+                    className="btn btn-sm btn-success"
+                  >
+                    Collect
+                  </a>
+                </td>
+
+
             
               </tr>
             ))}
