@@ -111,6 +111,8 @@ import Performance from './Performance/Performance';
 import Notifications from './Notifications/Notifications';
 import QuickActions from './QuickActions/QuickActions';
 import Profile from '../Profile/Profile';
+import LoanDetail from '../../features/Loandetails/LoanDetails';
+import CollectPage from './CollectPage/CollectPage';
 
 const CollectionAgentDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -439,8 +441,12 @@ const CollectionAgentDashboard = () => {
             <Route path="/performance" element={<Performance />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/actions" element={<QuickActions />} />
+            <Route path="/loan/:id" element={<LoanDetail />} />
+
             <Route path="/profile" element={<Profile />} />
             <Route path="/" element={<AgentDashboard />} />
+            <Route path="/collect/:loanId" element={<CollectPage />} />
+
           </Routes>
         </div>
       </div>

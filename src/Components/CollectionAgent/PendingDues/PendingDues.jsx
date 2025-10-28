@@ -1,136 +1,84 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import './PendingDues.css';
-
-const PendingDues = () => {
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+ 
+const PendingDuesList = () => {
   const [pendingDues, setPendingDues] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
+    const fetchPendingDues = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/auth/loan-schedules/", {
+          headers: { Authorization: `Token ${token}` },
+        });
+
+        // Filter pending or due statuses
+        const filtered = response.data.filter(
+          (item) =>
+            item.status?.toLowerCase() === "pending" ||
+            item.status?.toLowerCase() === "due"
+        );
+
+        setPendingDues(filtered);
+      } catch (err) {
+        console.error("Error fetching pending dues:", err);
+        setError("Failed to fetch pending dues.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchPendingDues();
-  }, []);
+  }, [token]);
 
-  const fetchPendingDues = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:8080/api/collection-agent/pending-dues', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setPendingDues(response.data);
-    } catch (error) {
-      console.error('Error fetching pending dues:', error);
-      // Mock data
-      setPendingDues([
-        {
-          id: 1,
-          loanId: 'LN001',
-          customerName: 'Rahul Sharma',
-          customerPhone: '9876543210',
-          dueDate: '2024-01-10',
-          amountDue: 15000,
-          overdueDays: 5,
-          status: 'OVERDUE'
-        },
-        {
-          id: 2,
-          loanId: 'LN003',
-          customerName: 'Amit Kumar',
-          customerPhone: '9876543212',
-          dueDate: '2024-01-12',
-          amountDue: 20000,
-          overdueDays: 3,
-          status: 'OVERDUE'
-        }
-      ]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR'
-    }).format(amount || 0);
-  };
-
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-IN');
-  };
-
-  if (loading) {
-    return <div className="loading">Loading pending dues...</div>;
-  }
+  if (loading) return <p>Loading pending dues...</p>;
+  if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   return (
-    <div className="pending-dues">
-      <div className="page-header">
-        <h1>Pending & Overdue Dues</h1>
-        <div className="header-stats">
-          <span className="stat">Total: {pendingDues.length}</span>
-          <span className="stat overdue-count">
-            Overdue: {pendingDues.filter(due => due.status === 'OVERDUE').length}
-          </span>
-        </div>
+    <div className="card border-0 shadow-sm">
+      <div className="card-header bg-danger text-white fw-semibold">
+        Pending Dues List
       </div>
-
-      <div className="dues-list">
+      <div className="card-body">
         {pendingDues.length === 0 ? (
-          <div className="no-data">No pending dues found</div>
+          <p className="text-muted text-center">🎉 No pending dues found.</p>
         ) : (
-          <div className="table-container">
-            <table className="dues-table">
-              <thead>
-                <tr>
-                  <th>Loan ID</th>
-                  <th>Customer Details</th>
-                  <th>Due Date</th>
-                  <th>Overdue Days</th>
-                  <th>Amount Due</th>
-                  <th>Status</th>
-                  <th>Actions</th>
+          <table className="table table-hover table-bordered align-middle text-center">
+            <thead className="table-light">
+              <tr>
+                <th>Loan ID</th>
+                <th>Installment No</th>
+                <th>Due Date</th>
+                <th>Principal</th>
+                <th>Interest</th>
+                <th>Total Due</th>
+                <th>Remaining Principal</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pendingDues.map((row) => (
+                <tr key={row.id}>
+                  <td>{row.loan}</td>
+                  <td>{row.installment_no}</td>
+                  <td>{new Date(row.due_date).toLocaleDateString()}</td>
+                  <td>₹{row.principal_amount}</td>
+                  <td>₹{row.interest_amount}</td>
+                  <td>₹{row.total_due}</td>
+                  <td>₹{row.remaining_principal}</td>
+                  <td>
+                    <StatusBadge status={row.status} />
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {pendingDues.map(due => (
-                  <tr key={due.id} className={due.status.toLowerCase()}>
-                    <td className="loan-id">#{due.loanId}</td>
-                    <td>
-                      <div className="customer-details">
-                        <div className="customer-name">{due.customerName}</div>
-                        <div className="customer-phone">{due.customerPhone}</div>
-                      </div>
-                    </td>
-                    <td>{formatDate(due.dueDate)}</td>
-                    <td>
-                      {due.overdueDays > 0 ? (
-                        <span className="overdue-days">{due.overdueDays} days</span>
-                      ) : (
-                        <span className="due-today">Due Today</span>
-                      )}
-                    </td>
-                    <td className="amount">{formatCurrency(due.amountDue)}</td>
-                    <td>
-                      <span className={`status-badge ${due.status.toLowerCase()}`}>
-                        {due.status}
-                      </span>
-                    </td>
-                    <td>
-                      <div className="action-buttons">
-                        <button className="btn btn-primary">Call</button>
-                        <button className="btn btn-secondary">Visit</button>
-                        <button className="btn btn-success">Collect</button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         )}
       </div>
     </div>
   );
 };
 
-export default PendingDues;
+export default PendingDuesList;
