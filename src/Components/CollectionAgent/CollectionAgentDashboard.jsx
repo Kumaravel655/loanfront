@@ -157,20 +157,16 @@ const CollectionAgentDashboard = () => {
         } catch (apiError) {
           console.log('Profile API not available, using localStorage data');
         }
+            const storedUser = localStorage.getItem("user");
 
         // Option 2: Fallback to localStorage data
-        const userName = localStorage.getItem('username') || 
-                        localStorage.getItem('userName') || 
-                        localStorage.getItem('name') || 
-                        'User Name';
+        const user =  JSON.parse(storedUser);
+
+        const userName = user.username;
         
-        const userEmail = localStorage.getItem('userEmail') || 
-                         localStorage.getItem('email') || 
-                         'user@example.com';
-        
-        const userRole = localStorage.getItem('userRole') || 
-                        localStorage.getItem('role') || 
-                        'Collection Agent';
+        const userEmail = user.email;
+        console.log(userName);
+        const userRole = user.role;
 
         updateUserData({ name: userName, email: userEmail, role: userRole });
 
