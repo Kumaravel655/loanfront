@@ -1,16 +1,16 @@
 .sidebar {
-  width: 250px;
+ width: 250px;
   background: linear-gradient(180deg, #2c3e50 0%, #3498db 100%);
   color: white;
   position: fixed;
   left: 0;
   top: 0;
-  height: 100vh;
+  height: 100vh; /* Fixed height */
   transition: transform 0.3s ease, width 0.3s ease;
   z-index: 100;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  overflow: auto; /* Changed from auto to hidden */
 }
 
 /* When sidebar is closed - completely off-screen */
@@ -26,7 +26,8 @@
 .toggleBtn {
   position: absolute;
   top: 20px;
-  right: -15px;
+  /* right: 15px; */
+  left : 215px;
   width: 30px;
   height: 30px;
   background: #3498db;
@@ -56,6 +57,7 @@
   padding: 30px 20px 20px;
   border-bottom: 1px solid rgba(255,255,255,0.1);
   text-align: center;
+  flex-shrink: 0; /* Prevent logo from shrinking */
 }
 
 .logoLink {
@@ -70,6 +72,26 @@
   padding: 20px 0;
   margin: 0;
   flex: 1;
+  overflow-y: auto; /* Allow scrolling only in nav list if needed */
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar for nav list */
+.navList::-webkit-scrollbar {
+  width: 4px;
+}
+
+.navList::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.1);
+}
+
+.navList::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.3);
+  border-radius: 2px;
+}
+
+.navList::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.5);
 }
 
 .navItem {
@@ -84,6 +106,7 @@
   text-decoration: none;
   transition: all 0.3s ease;
   border-left: 4px solid transparent;
+  white-space: nowrap;
 }
 
 .navLink:hover {
@@ -101,12 +124,15 @@
   margin-right: 15px;
   min-width: 20px;
   text-align: center;
+  flex-shrink: 0;
 }
 
 .text {
   white-space: nowrap;
   opacity: 1;
   transition: opacity 0.3s ease;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Mobile styles */
@@ -129,4 +155,14 @@
   .sidebar.open .toggleBtn {
     right: -40px;
   }
+}
+
+/* Ensure no scroll on the main sidebar container */
+.sidebar {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.sidebar::-webkit-scrollbar { 
+  display: none;  /* Safari and Chrome */
 }

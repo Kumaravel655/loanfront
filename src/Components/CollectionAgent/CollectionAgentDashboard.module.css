@@ -3,6 +3,7 @@
   min-height: 100vh;
   background-color: #f8f9fa;
   position: relative;
+  overflow: hidden;
 }
 
 /* Dropdown Overlay - Positioned absolutely outside main content */
@@ -465,19 +466,20 @@
   color: #e74c3c;
 }
 
+/* FIXED: Remove scrolling from contentArea */
 .contentArea {
   flex: 1;
   padding: 20px;
-  overflow-y: auto;
   background: #f8f9fa;
   min-height: calc(100vh - 70px);
   width: 100%;
   box-sizing: border-box;
-  overflow-x: hidden;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Loading styles - ADD THIS SECTION */
+/* Loading styles */
 .loadingContainer {
   display: flex;
   flex-direction: column;
@@ -501,6 +503,12 @@
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* Ensure child components don't cause overflow */
+.contentArea > * {
+  max-width: 100%;
+  overflow: visible;
 }
 
 /* Responsive Design */
@@ -564,6 +572,31 @@
   }
 }
 
+@media (max-width: 480px) {
+  .header {
+    padding: 0 15px;
+  }
+  
+  .title {
+    font-size: 1.1rem;
+    max-width: 150px;
+  }
+  
+  .contentArea {
+    padding: 10px;
+  }
+  
+  .notificationDropdown {
+    width: 280px;
+    right: 5px;
+  }
+  
+  .profileDropdown {
+    width: 220px;
+    right: 5px;
+  }
+}
+
 /* Ensure no horizontal scroll */
 .dashboard,
 .mainContent,
@@ -581,4 +614,21 @@ body {
   overflow-x: hidden;
   margin: 0;
   padding: 0;
+}
+
+/* Smooth transitions for sidebar */
+.mainContent {
+  transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+/* Fix for dropdown positioning when sidebar is toggled */
+.sidebarOpen ~ .dropdownOverlay .notificationDropdown,
+.sidebarOpen ~ .dropdownOverlay .profileDropdown {
+  transition: right 0.3s ease;
+}
+
+/* Ensure content area children don't cause layout issues */
+.contentArea > div {
+  width: 100%;
+  max-width: 100%;
 }
