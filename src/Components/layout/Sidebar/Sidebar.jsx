@@ -2,46 +2,46 @@ import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import styles from './Sidebar.module.css';
 
-const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
+const Sidebar = ({ isOpen, onToggle }) => {
   const navItems = [
     { name: 'Dashboard', icon: '🏠', path: '/admin/dashboard' },
     { name: 'Loan Applications', icon: '📝', path: '/admin/loan-applications' },
     { name: 'Customers', icon: '👥', path: '/admin/customers' },
+    { name: 'Loan Management', icon: '📊', path: '/admin/loans' },
     { name: 'Repayments', icon: '💰', path: '/admin/repayments' },
     { name: 'Disbursements', icon: '💸', path: '/admin/disbursements' },
+    { name: 'Collection Agents', icon: '👨‍💼', path: '/admin/agents' },
+    { name: 'Reports & Analytics', icon: '📈', path: '/admin/reports' },
+    { name: 'Notifications', icon: '🔔', path: '/admin/notifications' },
     { name: 'Roles & Permissions', icon: '🔐', path: '/admin/roles' },
-    {name: 'Agents', icon: '👥', path: '/admin/Agents' },
-    { name: 'Settings/Notifications', icon: '🔔', path: '/admin/settings' },
-    {name: 'logout ', icon: '🚪', path: '/login' } ,
- 
+    { name: 'Profile', icon: '👤', path: '/admin/profile' },
   ];
 
   return (
     <>
-      {/* Toggle Button */}
-      <button
-        className={styles.toggleBtn}
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        {isOpen ? '✖️' : '☰'}
-      </button>
-
-      {/* Sidebar */}
-      <nav className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
-        <div className={styles.logo}>
-          <Link to="/" className={styles.logoLink}>LMS</Link>
+      <div className={`${styles.sidebar} ${isOpen ? styles.open : styles.closed}`}>
+        <div className={styles.sidebarHeader}>
+          <div className={styles.logo}>
+            <Link to="/admin/dashboard" className={styles.logoLink}>LMS Admin</Link>
+          </div>
+          <button className={styles.closeBtn} onClick={onToggle}>
+            ✕
+          </button>
         </div>
         <ul className={styles.navList}>
           {navItems.map((item) => (
             <li key={item.name} className={styles.navItem}>
               <NavLink
                 to={item.path}
-                onClick={() => setIsOpen(false)} // close sidebar after click
                 className={({ isActive }) =>
                   isActive ? `${styles.navLink} ${styles.active}` : styles.navLink
                 }
+                onClick={() => {
+                  // Close sidebar when navigation item is clicked
+                  if (onToggle) {
+                    onToggle();
+                  }
+                }}
               >
                 <span className={styles.icon}>{item.icon}</span>
                 <span className={styles.text}>{item.name}</span>
@@ -49,7 +49,8 @@ const Sidebar = () => {
             </li>
           ))}
         </ul>
-      </nav>
+      </div>
+      {isOpen && <div className={styles.overlay} onClick={onToggle}></div>}
     </>
   );
 };

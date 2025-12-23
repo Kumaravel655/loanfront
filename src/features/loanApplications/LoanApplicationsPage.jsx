@@ -16,35 +16,39 @@ const LoanApplicationsPage = () => {
   const token = localStorage.getItem('token'); // logged-in user's token
 
   useEffect(() => {
-    const fetchApplications = async () => {
-      if (!token) {
-        setError("User not logged in");
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        setIsLoading(true);
-        const response = await axios.get('http://127.0.0.1:8000/api/auth/loans/', {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
-        });
-        setApplications(response.data);
-        setError(null);
-      } catch (err) {
-        console.error(err);
-        setError('Failed to fetch loan applications.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchApplications();
   }, [token]);
 
+  const fetchApplications = async () => {
+    if (!token) {
+      setError("User not logged in");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const response = await axios.get('http://127.0.0.1:8000/api/auth/loans/', {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
+      setApplications(response.data);
+      setError(null);
+    } catch (err) {
+      console.error(err);
+      setError('Failed to fetch loan applications.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
+  const handleApplicationCreated = () => {
+    setIsModalOpen(false);
+    fetchApplications();
+  };
 
   let content;
   if (isLoading) {
@@ -70,7 +74,7 @@ const LoanApplicationsPage = () => {
 
       {isModalOpen && (
         <Modal onClose={handleCloseModal}>
-          <LoanApplicationForm />
+          <LoanApplicationForm onSuccess={handleApplicationCreated} />
         </Modal>
       )}
     </div>

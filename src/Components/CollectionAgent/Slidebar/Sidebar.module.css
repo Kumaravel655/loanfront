@@ -5,59 +5,33 @@
   position: fixed;
   left: 0;
   top: 0;
-  height: 100vh; /* Fixed height */
+  height: 100vh;
   transition: transform 0.3s ease, width 0.3s ease;
-  z-index: 100;
+  z-index: 1000;
   display: flex;
   flex-direction: column;
-  overflow: auto; /* Changed from auto to hidden */
+  overflow: hidden;
 }
 
-/* When sidebar is closed - completely off-screen */
 .sidebar:not(.open) {
   transform: translateX(-100%);
 }
 
-/* When sidebar is open - visible */
 .sidebar.open {
   transform: translateX(0);
 }
 
-.toggleBtn {
-  position: absolute;
-  top: 20px;
-  /* right: 15px; */
-  left : 215px;
-  width: 30px;
-  height: 30px;
-  background: #3498db;
-  border: none;
-  border-radius: 50%;
-  color: white;
-  cursor: pointer;
+.sidebarHeader {
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  z-index: 1001;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  transition: background-color 0.3s ease, right 0.3s ease;
-}
-
-.toggleBtn:hover {
-  background: #2980b9;
-}
-
-/* Ensure toggle button is visible when sidebar is open */
-.sidebar.open .toggleBtn {
-  right: -15px;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  flex-shrink: 0;
 }
 
 .logo {
-  padding: 30px 20px 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  text-align: center;
-  flex-shrink: 0; /* Prevent logo from shrinking */
+  flex: 1;
 }
 
 .logoLink {
@@ -67,16 +41,41 @@
   font-weight: bold;
 }
 
+.closeBtn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.closeBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #3498db;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
 .navList {
   list-style: none;
   padding: 20px 0;
   margin: 0;
   flex: 1;
-  overflow-y: auto; /* Allow scrolling only in nav list if needed */
+  overflow-y: auto;
   overflow-x: hidden;
 }
 
-/* Custom scrollbar for nav list */
 .navList::-webkit-scrollbar {
   width: 4px;
 }
@@ -135,34 +134,13 @@
   text-overflow: ellipsis;
 }
 
-/* Mobile styles */
 @media (max-width: 768px) {
   .sidebar {
-    width: 250px;
+    width: 100%;
     transform: translateX(-100%);
-    z-index: 100;
   }
   
   .sidebar.open {
     transform: translateX(0);
   }
-  
-  .toggleBtn {
-    right: -40px;
-    background: #e74c3c;
-  }
-  
-  .sidebar.open .toggleBtn {
-    right: -40px;
-  }
-}
-
-/* Ensure no scroll on the main sidebar container */
-.sidebar {
-  -ms-overflow-style: none;  /* Internet Explorer 10+ */
-  scrollbar-width: none;  /* Firefox */
-}
-
-.sidebar::-webkit-scrollbar { 
-  display: none;  /* Safari and Chrome */
 }

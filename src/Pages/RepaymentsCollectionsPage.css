@@ -1,5 +1,5 @@
-/* Modern Disbursement Page Styles */
-.pageContainer {
+/* Modern Repayments & Collections Page Styles */
+.repayments-page {
   padding: 1.5rem;
   max-width: 1400px;
   margin: 0 auto;
@@ -7,19 +7,19 @@
   min-height: 100vh;
 }
 
-.pageHeader {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+.page-header {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   border-radius: 16px;
   padding: 2rem;
   margin-bottom: 2rem;
   color: white;
 }
 
-.headerContent {
+.header-content {
   text-align: center;
 }
 
-.pageTitle {
+.page-title {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -29,44 +29,24 @@
   margin: 0 0 0.5rem 0;
 }
 
-.titleIcon {
+.title-icon {
   font-size: 2.5rem;
 }
 
-.pageSubtitle {
+.page-subtitle {
   font-size: 1.1rem;
   opacity: 0.9;
   margin: 0;
 }
 
-.alert {
-  padding: 1rem 1.5rem;
-  border-radius: 12px;
-  margin-bottom: 1.5rem;
-  font-weight: 500;
-  text-align: center;
-}
-
-.alert.success {
-  background: #f0fdf4;
-  color: #166534;
-  border: 1px solid #bbf7d0;
-}
-
-.alert.error {
-  background: #fef2f2;
-  color: #dc2626;
-  border: 1px solid #fecaca;
-}
-
-.statsGrid {
+.stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
 
-.statCard {
+.stat-card {
   background: white;
   border-radius: 12px;
   padding: 1.5rem;
@@ -77,7 +57,23 @@
   gap: 1rem;
 }
 
-.statIcon {
+.stat-card.primary {
+  border-left: 4px solid #3b82f6;
+}
+
+.stat-card.success {
+  border-left: 4px solid #10b981;
+}
+
+.stat-card.warning {
+  border-left: 4px solid #f59e0b;
+}
+
+.stat-card.danger {
+  border-left: 4px solid #ef4444;
+}
+
+.stat-icon {
   font-size: 2rem;
   width: 60px;
   height: 60px;
@@ -88,7 +84,7 @@
   border-radius: 12px;
 }
 
-.statContent h3 {
+.stat-content h3 {
   margin: 0 0 0.25rem 0;
   font-size: 0.875rem;
   color: #6b7280;
@@ -97,14 +93,14 @@
   letter-spacing: 0.05em;
 }
 
-.statContent p {
+.stat-content p {
   margin: 0;
   font-size: 1.75rem;
   font-weight: 700;
   color: #1f2937;
 }
 
-.filtersCard {
+.filters-card {
   background: white;
   border-radius: 12px;
   padding: 1.5rem;
@@ -113,21 +109,21 @@
   border: 1px solid #e5e7eb;
 }
 
-.filtersCard h3 {
+.filters-card h3 {
   margin: 0 0 1rem 0;
   font-size: 1.125rem;
   font-weight: 600;
   color: #1f2937;
 }
 
-.filtersRow {
+.filters-row {
   display: flex;
   gap: 1rem;
   align-items: center;
   flex-wrap: wrap;
 }
 
-.filterSelect {
+.filter-select {
   padding: 0.75rem 1rem;
   border: 1.5px solid #d1d5db;
   border-radius: 8px;
@@ -136,13 +132,13 @@
   min-width: 150px;
 }
 
-.filterSelect:focus {
+.filter-select:focus {
   outline: none;
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-.resetBtn {
+.reset-btn {
   padding: 0.75rem 1.5rem;
   background: #6b7280;
   color: white;
@@ -153,11 +149,11 @@
   transition: background 0.2s;
 }
 
-.resetBtn:hover {
+.reset-btn:hover {
   background: #4b5563;
 }
 
-.tableCard {
+.table-card {
   background: white;
   border-radius: 12px;
   padding: 1.5rem;
@@ -165,23 +161,23 @@
   border: 1px solid #e5e7eb;
 }
 
-.tableCard h3 {
+.table-card h3 {
   margin: 0 0 1.5rem 0;
   font-size: 1.125rem;
   font-weight: 600;
   color: #1f2937;
 }
 
-.tableContainer {
+.table-container {
   overflow-x: auto;
 }
 
-.table {
+.repayments-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.table th {
+.repayments-table th {
   background: #f9fafb;
   padding: 0.75rem 1rem;
   text-align: left;
@@ -191,17 +187,17 @@
   font-size: 0.875rem;
 }
 
-.table td {
+.repayments-table td {
   padding: 1rem;
   border-bottom: 1px solid #f3f4f6;
   color: #1f2937;
 }
 
-.table tr:hover {
+.repayments-table tr:hover {
   background: #f9fafb;
 }
 
-.statusBadge, .typeBadge {
+.status-badge {
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
   font-size: 0.75rem;
@@ -210,92 +206,129 @@
   letter-spacing: 0.05em;
 }
 
-.badge-success {
+.status-badge.success {
   background: #dcfce7;
   color: #166534;
 }
 
-.badge-warning {
+.status-badge.warning {
   background: #fef3c7;
   color: #92400e;
 }
 
-.badge-danger {
+.status-badge.danger {
   background: #fee2e2;
   color: #dc2626;
 }
 
-.disbursement {
-  background: #dbeafe;
-  color: #1e40af;
+.status-badge.secondary {
+  background: #f3f4f6;
+  color: #6b7280;
 }
 
-.refund {
-  background: #f3e8ff;
-  color: #7c3aed;
-}
-
-.actionButtons {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.actionBtn {
-  padding: 0.5rem 1rem;
-  border: none;
+.agent-select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
   border-radius: 6px;
+  background: white;
   font-size: 0.75rem;
+  min-width: 120px;
+}
+
+.agent-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.loading-state {
+  text-align: center;
+  padding: 3rem;
+  color: #6b7280;
+  font-size: 1.1rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #6b7280;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state h4 {
+  margin: 0 0 0.5rem 0;
+  color: #374151;
+  font-size: 1.25rem;
+}
+
+.empty-state p {
+  margin: 0 0 1.5rem 0;
+  color: #6b7280;
+}
+
+.retry-btn {
+  padding: 0.75rem 1.5rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.2s;
 }
 
-.approve {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.approve:hover {
-  background: #bbf7d0;
-}
-
-.reject {
-  background: #fee2e2;
-  color: #dc2626;
-}
-
-.reject:hover {
-  background: #fecaca;
+.retry-btn:hover {
+  background: #2563eb;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .pageContainer {
+  .repayments-page {
     padding: 1rem;
   }
   
-  .pageHeader {
+  .page-header {
     padding: 1.5rem;
   }
   
-  .pageTitle {
+  .page-title {
     font-size: 1.5rem;
   }
   
-  .statsGrid {
+  .stats-grid {
     grid-template-columns: 1fr;
   }
   
-  .filtersRow {
+  .filters-row {
     flex-direction: column;
     align-items: stretch;
   }
   
-  .filterSelect {
+  .filter-select {
     min-width: auto;
   }
   
-  .actionButtons {
+  .repayments-table {
+    font-size: 0.875rem;
+  }
+  
+  .repayments-table th,
+  .repayments-table td {
+    padding: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stat-card {
     flex-direction: column;
+    text-align: center;
+  }
+  
+  .stat-icon {
+    margin-bottom: 0.5rem;
   }
 }

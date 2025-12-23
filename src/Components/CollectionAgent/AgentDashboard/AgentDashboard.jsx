@@ -1,81 +1,89 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { loanService } from '../../../services/loanService';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { FaDollarSign, FaClock, FaExclamationTriangle, FaChartBar, FaCalendarAlt, FaCheckCircle, FaClipboardList, FaHistory, FaSync, FaHandPaper } from 'react-icons/fa';
 import './AgentDashboard.css';
 
 const AgentDashboard = () => {
   const [dashboardData, setDashboardData] = useState({
-    upcomingPayments: [],
-    assignedLoans: [],
-    stats: {}
+    todayCollection: 0,
+    pendingDues: 0,
+    overdueLoans: 0,
+    assignedLoans: 0,
+    completionRate: 0,
+    recentCollections: [],
+    upcomingDues: [],
+    loading: false,
+    error: null
   });
-  const [loading, setLoading] = useState(true);
+
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem('user') || '{}');
+    setUser(userData);
     fetchDashboardData();
   }, []);
 
   const fetchDashboardData = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:8080/api/collection-agent/dashboard', {
-        headers: { Authorization: `Bearer ${token}` }
+      // Fetch assigned loan schedules for current agent
+      const schedules = await loanService.getLoanSchedules();
+      const today = new Date().toISOString().split('T')[0];
+      
+      // Filter schedules for current user
+      const userSchedules = schedules.filter(schedule => 
+        schedule.assigned_to === user?.id
+      );
+      
+      // Calculate metrics
+      const todaySchedules = userSchedules.filter(s => s.due_date === today);
+      const pendingSchedules = userSchedules.filter(s => s.status === 'pending');
+      const overdueSchedules = userSchedules.filter(s => 
+        new Date(s.due_date) < new Date() && s.status === 'pending'
+      );
+      const completedSchedules = userSchedules.filter(s => s.status === 'done');
+      
+      const todayCollection = todaySchedules
+        .filter(s => s.status === 'done')
+        .reduce((sum, s) => sum + parseFloat(s.total_due || 0), 0);
+      
+      const pendingDues = pendingSchedules
+        .reduce((sum, s) => sum + parseFloat(s.total_due || 0), 0);
+      
+      const completionRate = userSchedules.length > 0 
+        ? Math.round((completedSchedules.length / userSchedules.length) * 100)
+        : 0;
+      
+      // Get upcoming dues (next 7 days)
+      const nextWeek = new Date();
+      nextWeek.setDate(nextWeek.getDate() + 7);
+      const upcomingDues = pendingSchedules
+        .filter(s => new Date(s.due_date) <= nextWeek)
+        .sort((a, b) => new Date(a.due_date) - new Date(b.due_date))
+        .slice(0, 5);
+      
+      setDashboardData({
+        todayCollection,
+        pendingDues,
+        overdueLoans: overdueSchedules.length,
+        assignedLoans: userSchedules.length,
+        completionRate,
+        recentCollections: completedSchedules.slice(0, 5),
+        upcomingDues,
+        loading: false,
+        error: null
       });
-      setDashboardData(response.data);
+      
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
-      // Mock data for demonstration
-      setDashboardData({
-        upcomingPayments: [
-          {
-            id: 1,
-            loanId: 'LN001',
-            customerName: 'Rahul Sharma',
-            dueDate: '2024-01-15',
-            amountDue: 15000,
-            customerPhone: '9876543210'
-          },
-          {
-            id: 2,
-            loanId: 'LN002',
-            customerName: 'Priya Patel',
-            dueDate: '2024-01-16',
-            amountDue: 12000,
-            customerPhone: '9876543211'
-          }
-        ],
-        assignedLoans: [
-          {
-            id: 'LN001',
-            customerName: 'Rahul Sharma',
-            loanAmount: 500000,
-            outstandingBalance: 350000,
-            nextDueDate: '2024-01-15',
-            status: 'ACTIVE'
-          },
-          {
-            id: 'LN002',
-            customerName: 'Priya Patel',
-            loanAmount: 300000,
-            outstandingBalance: 180000,
-            nextDueDate: '2024-01-16',
-            status: 'ACTIVE'
-          }
-        ],
-        stats: {
-          totalLoans: 15,
-          upcomingPayments: 8,
-          overduePayments: 3,
-          totalCollection: 125000
-        }
-      });
-    } finally {
-      setLoading(false);
+      setDashboardData(prev => ({
+        ...prev,
+        loading: false,
+        error: error.message || 'Failed to load dashboard data'
+      }));
     }
-  };
-
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-IN');
   };
 
   const formatCurrency = (amount) => {
@@ -84,197 +92,225 @@ const AgentDashboard = () => {
       currency: 'INR',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
-    }).format(amount || 0);
+    }).format(amount);
   };
 
-  const getPaymentStatus = (dueDate) => {
-    const today = new Date();
-    const due = new Date(dueDate);
-    const diffTime = due - today;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    if (diffDays < 0) return { status: 'Overdue', class: 'overdue' };
-    if (diffDays <= 3) return { status: 'Due Soon', class: 'due-soon' };
-    return { status: 'Upcoming', class: 'upcoming' };
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-IN', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
   };
 
-  if (loading) {
+  if (dashboardData.loading) {
     return (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
-        <p>Loading dashboard data...</p>
+      <div className="agent-dashboard">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (dashboardData.error) {
+    return (
+      <div className="agent-dashboard">
+        <div className="error-container">
+          <div className="error-icon"><FaExclamationTriangle style={{fontSize: '48px', color: '#dc3545'}} /></div>
+          <h3>Error Loading Dashboard</h3>
+          <p>{dashboardData.error}</p>
+          <button onClick={fetchDashboardData} className="retry-btn">
+            Try Again
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="agent-dashboard">
-      {/* Stats Overview */}
-      <div className="stats-grid">
-        <div className="stat-card">
-          <div className="stat-icon">📋</div>
-          <div className="stat-content">
-            <h3 className="stat-title">Total Assigned Loans</h3>
-            <p className="stat-number">{dashboardData.stats.totalLoans || 0}</p>
-            <Link to="/agent/assigned-loans" className="stat-link">View All →</Link>
-          </div>
+      {/* Welcome Section */}
+      <motion.div 
+        className="welcome-section"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="welcome-content">
+          <h1>Welcome back, {user?.username || 'Agent'}! <FaHandPaper /></h1>
+          <p>Here's your collection overview for today</p>
         </div>
-        
-        <div className="stat-card">
-          <div className="stat-icon">💰</div>
-          <div className="stat-content">
-            <h3 className="stat-title">Today's Collection</h3>
-            <p className="stat-number">{formatCurrency(dashboardData.stats.totalCollection)}</p>
-            <Link to="/agent/summary" className="stat-link">View Summary →</Link>
-          </div>
+        <div className="date-info">
+          <span>{new Date().toLocaleDateString('en-IN', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          })}</span>
         </div>
-        
-        <div className="stat-card">
-          <div className="stat-icon">⏰</div>
-          <div className="stat-content">
-            <h3 className="stat-title">Upcoming Payments</h3>
-            <p className="stat-number">{dashboardData.stats.upcomingPayments || 0}</p>
-            <Link to="/agent/pending" className="stat-link">View Details →</Link>
+      </motion.div>
+
+      {/* Metrics Cards */}
+      <div className="metrics-grid">
+        <motion.div 
+          className="metric-card primary"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          <div className="metric-icon"><FaDollarSign /></div>
+          <div className="metric-content">
+            <h3>Today's Collection</h3>
+            <p className="metric-value">{formatCurrency(dashboardData.todayCollection)}</p>
+            <span className="metric-label">Collected today</span>
           </div>
-        </div>
-        
-        <div className="stat-card">
-          <div className="stat-icon">⚠️</div>
-          <div className="stat-content">
-            <h3 className="stat-title">Overdue Payments</h3>
-            <p className="stat-number">{dashboardData.stats.overduePayments || 0}</p>
-            <Link to="/agent/pending" className="stat-link">Take Action →</Link>
+        </motion.div>
+
+        <motion.div 
+          className="metric-card warning"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <div className="metric-icon"><FaClock /></div>
+          <div className="metric-content">
+            <h3>Pending Dues</h3>
+            <p className="metric-value">{formatCurrency(dashboardData.pendingDues)}</p>
+            <span className="metric-label">Amount pending</span>
           </div>
-        </div>
+        </motion.div>
+
+        <motion.div 
+          className="metric-card danger"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <div className="metric-icon"><FaExclamationTriangle /></div>
+          <div className="metric-content">
+            <h3>Overdue Loans</h3>
+            <p className="metric-value">{dashboardData.overdueLoans}</p>
+            <span className="metric-label">Loans overdue</span>
+          </div>
+        </motion.div>
+
+        <motion.div 
+          className="metric-card success"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <div className="metric-icon"><FaChartBar /></div>
+          <div className="metric-content">
+            <h3>Completion Rate</h3>
+            <p className="metric-value">{dashboardData.completionRate}%</p>
+            <span className="metric-label">Collection rate</span>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Content Grid */}
+      <div className="content-grid">
+        {/* Upcoming Dues */}
+        <motion.div 
+          className="dashboard-card"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+        >
+          <div className="card-header">
+            <h3><FaCalendarAlt style={{marginRight: '8px'}} /> Upcoming Dues</h3>
+            <span className="card-subtitle">Next 7 days</span>
+          </div>
+          <div className="card-content">
+            {dashboardData.upcomingDues.length > 0 ? (
+              <div className="dues-list">
+                {dashboardData.upcomingDues.map((due) => (
+                  <div key={due.id || due.due_date} className="due-item">
+                    <div className="due-info">
+                      <span className="due-date">{formatDate(due.due_date)}</span>
+                      <span className="due-amount">{formatCurrency(due.total_due)}</span>
+                    </div>
+                    <div className="due-status">
+                      <span className={`status-badge ${due.status}`}>
+                        {due.status === 'pending' ? 'Pending' : 'Done'}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="empty-state">
+                <p>No upcoming dues</p>
+              </div>
+            )}
+          </div>
+        </motion.div>
+
+        {/* Recent Collections */}
+        <motion.div 
+          className="dashboard-card"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+        >
+          <div className="card-header">
+            <h3><FaCheckCircle style={{marginRight: '8px'}} /> Recent Collections</h3>
+            <span className="card-subtitle">Latest completed</span>
+          </div>
+          <div className="card-content">
+            {dashboardData.recentCollections.length > 0 ? (
+              <div className="collections-list">
+                {dashboardData.recentCollections.map((collection) => (
+                  <div key={collection.id || collection.due_date} className="collection-item">
+                    <div className="collection-info">
+                      <span className="collection-date">{formatDate(collection.due_date)}</span>
+                      <span className="collection-amount">{formatCurrency(collection.total_due)}</span>
+                    </div>
+                    <div className="collection-status">
+                      <span className="status-badge success">Collected</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="empty-state">
+                <p>No recent collections</p>
+              </div>
+            )}
+          </div>
+        </motion.div>
       </div>
 
       {/* Quick Actions */}
-      <div className="quick-actions-section">
-        <div className="section-header">
-          <h2>Quick Actions</h2>
-        </div>
-        <div className="action-buttons-grid">
-          <Link to="/agent/assigned-loans" className="action-btn">
-            <span className="action-icon">📋</span>
-            <span className="action-text">View All Loans</span>
+      <motion.div 
+        className="quick-actions"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.7 }}
+      >
+        <h3>Quick Actions</h3>
+        <div className="actions-grid">
+          <Link to="/agent/assigned-loans" className="action-btn primary">
+            <span className="action-icon"><FaClipboardList /></span>
+            <span>View Assigned Loans</span>
           </Link>
-          <Link to="/agent/actions" className="action-btn">
-            <span className="action-icon">💰</span>
-            <span className="action-text">Record Payment</span>
+          <Link to="/agent/pending" className="action-btn secondary">
+            <span className="action-icon"><FaClock /></span>
+            <span>Pending Collections</span>
           </Link>
-          <Link to="/agent/pending" className="action-btn">
-            <span className="action-icon">⚠️</span>
-            <span className="action-text">Pending Dues</span>
+          <Link to="/agent/history" className="action-btn tertiary">
+            <span className="action-icon"><FaHistory /></span>
+            <span>Collection History</span>
           </Link>
-          <Link to="/agent/summary" className="action-btn">
-            <span className="action-icon">📊</span>
-            <span className="action-text">Today's Summary</span>
-          </Link>
+          <button className="action-btn quaternary" onClick={fetchDashboardData}>
+            <span className="action-icon"><FaSync /></span>
+            <span>Refresh Data</span>
+          </button>
         </div>
-      </div>
-
-      {/* Two Column Layout */}
-      <div className="dashboard-content-grid">
-        {/* Upcoming Payments */}
-        <div className="content-card">
-          <div className="card-header">
-            <h3>Upcoming Due Payments</h3>
-            <Link to="/agent/pending" className="view-all-link">View All →</Link>
-          </div>
-          <div className="table-container">
-            {dashboardData.upcomingPayments.length === 0 ? (
-              <div className="no-data">
-                <div className="empty-icon">📅</div>
-                <p>No upcoming payments</p>
-              </div>
-            ) : (
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>Loan ID</th>
-                    <th>Customer</th>
-                    <th>Due Date</th>
-                    <th>Amount</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {dashboardData.upcomingPayments.slice(0, 5).map(payment => {
-                    const statusInfo = getPaymentStatus(payment.dueDate);
-                    return (
-                      <tr key={payment.id}>
-                        <td className="loan-id">#{payment.loanId}</td>
-                        <td>
-                          <div className="customer-info">
-                            <div className="customer-name">{payment.customerName}</div>
-                            <div className="customer-phone">{payment.customerPhone}</div>
-                          </div>
-                        </td>
-                        <td className="due-date">{formatDate(payment.dueDate)}</td>
-                        <td className="amount">{formatCurrency(payment.amountDue)}</td>
-                        <td>
-                          <span className={`status-badge ${statusInfo.class}`}>
-                            {statusInfo.status}
-                          </span>
-                        </td>
-                        <td>
-                          <button className="collect-btn">Collect</button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            )}
-          </div>
-        </div>
-
-        {/* Assigned Loans */}
-        <div className="content-card">
-          <div className="card-header">
-            <h3>Recent Assigned Loans</h3>
-            <Link to="/agent/assigned-loans" className="view-all-link">View All →</Link>
-          </div>
-          <div className="table-container">
-            {dashboardData.assignedLoans.length === 0 ? (
-              <div className="no-data">
-                <div className="empty-icon">📝</div>
-                <p>No assigned loans</p>
-              </div>
-            ) : (
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>Loan ID</th>
-                    <th>Customer</th>
-                    <th>Loan Amount</th>
-                    <th>Outstanding</th>
-                    <th>Next Due</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {dashboardData.assignedLoans.slice(0, 5).map(loan => (
-                    <tr key={loan.id}>
-                      <td className="loan-id">#{loan.id}</td>
-                      <td className="customer-name">{loan.customerName}</td>
-                      <td className="amount">{formatCurrency(loan.loanAmount)}</td>
-                      <td className="amount">{formatCurrency(loan.outstandingBalance)}</td>
-                      <td className="next-due">{formatDate(loan.nextDueDate)}</td>
-                      <td>
-                        <span className={`status-badge ${loan.status.toLowerCase()}`}>
-                          {loan.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
-        </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

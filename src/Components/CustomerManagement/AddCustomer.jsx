@@ -3,7 +3,7 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import "./AddCustomer.css";
 
-export default function AddCustomer({ onSuccess }) {
+export default function AddCustomer({ onSuccess, onClose }) {
   const [customerData, setCustomerData] = useState({
     customer_code: "",
     full_name: "",
@@ -83,9 +83,19 @@ export default function AddCustomer({ onSuccess }) {
       transition={{ duration: 0.4 }}
       className="super-form-container"
     >
-      <h2 className="super-form-title">
-        <span>👤</span> Add New Customer
-      </h2>
+      <div className="super-form-header">
+        <h2 className="super-form-title">
+          <span>👤</span> Add New Customer
+        </h2>
+        <button 
+          type="button" 
+          onClick={onClose || (() => window.history.back())} 
+          className="close-button"
+          aria-label="Close"
+        >
+          ✕
+        </button>
+      </div>
 
       <form onSubmit={handleSubmit} className="super-form-grid">
         {[

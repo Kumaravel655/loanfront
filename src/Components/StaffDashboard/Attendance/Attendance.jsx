@@ -1,374 +1,257 @@
 import React, { useState, useEffect } from 'react';
-import './Attendance.css';
+import { motion } from 'framer-motion';
+import { FaCalendarCheck, FaUserCheck, FaUserTimes, FaClock, FaCalendarAlt, FaPercentage } from 'react-icons/fa';
+import { loanService } from '../../../services/loanService';
 
 const Attendance = () => {
-  const [attendanceData, setAttendanceData] = useState({});
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-  const [loading, setLoading] = useState(true);
+  const [attendanceData, setAttendanceData] = useState([
+    { id: 1, agent: 'Ravi Kumar', status: 'present', checkIn: '09:15', checkOut: '18:30' },
+    { id: 2, agent: 'Priya Sharma', status: 'present', checkIn: '09:00', checkOut: '18:45' },
+    { id: 3, agent: 'Amit Singh', status: 'absent', checkIn: null, checkOut: null }
+  ]);
 
   useEffect(() => {
-    fetchAttendanceData();
+    // Fetch attendance data for selected date
   }, [selectedDate]);
-
-  const fetchAttendanceData = async () => {
-    setTimeout(() => {
-      setAttendanceData({
-        summary: {
-          present: 18,
-          absent: 3,
-          late: 2,
-          onLeave: 2,
-          attendanceRate: 85.7
-        },
-        dailyAttendance: [
-          {
-            id: 1,
-            name: 'Priya Sharma',
-            checkIn: '09:05 AM',
-            checkOut: '06:15 PM',
-            status: 'present',
-            location: 'Central Zone',
-            workingHours: '9h 10m',
-            lateMinutes: 5
-          },
-          {
-            id: 2,
-            name: 'Ravi Kumar',
-            checkIn: '08:55 AM',
-            checkOut: '06:20 PM',
-            status: 'present',
-            location: 'South Zone',
-            workingHours: '9h 25m',
-            lateMinutes: 0
-          },
-          {
-            id: 3,
-            name: 'Meena Patel',
-            checkIn: '09:25 AM',
-            checkOut: '06:10 PM',
-            status: 'late',
-            location: 'West Zone',
-            workingHours: '8h 45m',
-            lateMinutes: 25
-          },
-          {
-            id: 4,
-            name: 'Rahul Dev',
-            checkIn: '-',
-            checkOut: '-',
-            status: 'absent',
-            location: 'North Zone',
-            workingHours: '0h 0m',
-            lateMinutes: 0
-          },
-          {
-            id: 5,
-            name: 'Ankit Singh',
-            checkIn: '09:15 AM',
-            checkOut: '05:45 PM',
-            status: 'present',
-            location: 'East Zone',
-            workingHours: '8h 30m',
-            lateMinutes: 15
-          }
-        ],
-        monthlyStats: [
-          { month: 'Jan', present: 22, absent: 3, late: 2, rate: 88.9 },
-          { month: 'Feb', present: 20, absent: 4, late: 3, rate: 83.3 },
-          { month: 'Mar', present: 23, absent: 2, late: 1, rate: 92.0 },
-          { month: 'Apr', present: 21, absent: 3, late: 2, rate: 87.5 },
-          { month: 'May', present: 24, absent: 1, late: 1, rate: 96.0 },
-          { month: 'Jun', present: 18, absent: 3, late: 2, rate: 85.7 }
-        ],
-        leaveRequests: [
-          {
-            id: 1,
-            name: 'Rahul Dev',
-            type: 'Sick Leave',
-            from: '2024-06-15',
-            to: '2024-06-16',
-            status: 'approved',
-            reason: 'Medical appointment'
-          },
-          {
-            id: 2,
-            name: 'Priya Sharma',
-            type: 'Personal Leave',
-            from: '2024-06-20',
-            to: '2024-06-21',
-            status: 'pending',
-            reason: 'Family function'
-          }
-        ]
-      });
-      setLoading(false);
-    }, 1000);
-  };
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'present': return '#10B981';
-      case 'absent': return '#EF4444';
-      case 'late': return '#F59E0B';
-      case 'onLeave': return '#3B82F6';
-      default: return '#6B7280';
+      case 'present': return '#10b981';
+      case 'absent': return '#ef4444';
+      case 'late': return '#f59e0b';
+      default: return '#6b7280';
     }
   };
 
-  const handleApproveLeave = (requestId) => {
-    setAttendanceData(prev => ({
-      ...prev,
-      leaveRequests: prev.leaveRequests.map(req =>
-        req.id === requestId ? { ...req, status: 'approved' } : req
-      )
-    }));
-  };
-
-  const handleRejectLeave = (requestId) => {
-    setAttendanceData(prev => ({
-      ...prev,
-      leaveRequests: prev.leaveRequests.map(req =>
-        req.id === requestId ? { ...req, status: 'rejected' } : req
-      )
-    }));
-  };
-
-  if (loading) {
-    return <div className="loading">Loading attendance data...</div>;
-  }
+  const presentCount = attendanceData.filter(a => a.status === 'present').length;
+  const attendanceRate = Math.round((presentCount / attendanceData.length) * 100);
 
   return (
-    <div className="attendance">
-      <div className="page-header">
-        <div>
-          <h1>Attendance Management</h1>
-          <p>Track and manage team attendance and leave requests</p>
-        </div>
-        <div className="date-selector">
+    <div style={{
+      padding: '24px',
+      background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+      minHeight: '100vh'
+    }}>
+      {/* Header */}
+      <motion.div 
+        style={{
+          background: 'white',
+          padding: '24px',
+          borderRadius: '16px',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+          marginBottom: '24px'
+        }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <h1 style={{
+              margin: '0 0 8px 0',
+              fontSize: '28px',
+              fontWeight: '700',
+              color: '#2d3748'
+            }}>
+              <FaCalendarCheck style={{marginRight: '8px'}} /> Attendance Management
+            </h1>
+            <p style={{
+              margin: 0,
+              color: '#718096',
+              fontSize: '16px'
+            }}>
+              Track agent attendance and working hours
+            </p>
+          </div>
           <input
             type="date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
+            style={{
+              padding: '8px 12px',
+              border: '2px solid #e2e8f0',
+              borderRadius: '8px',
+              fontSize: '14px'
+            }}
           />
         </div>
+      </motion.div>
+
+      {/* Stats Cards */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+        gap: '20px',
+        marginBottom: '24px'
+      }}>
+        <motion.div 
+          style={{
+            background: 'white',
+            padding: '20px',
+            borderRadius: '12px',
+            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px'
+          }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <div style={{
+            width: '50px',
+            height: '50px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #10b981, #059669)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white'
+          }}>
+            <FaUserCheck style={{fontSize: '20px'}} />
+          </div>
+          <div>
+            <h3 style={{margin: 0, fontSize: '24px', fontWeight: '700', color: '#2d3748'}}>
+              {presentCount}
+            </h3>
+            <p style={{margin: 0, color: '#718096', fontSize: '14px'}}>Present Today</p>
+          </div>
+        </motion.div>
+
+        <motion.div 
+          style={{
+            background: 'white',
+            padding: '20px',
+            borderRadius: '12px',
+            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px'
+          }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <div style={{
+            width: '50px',
+            height: '50px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white'
+          }}>
+            <FaUserTimes style={{fontSize: '20px'}} />
+          </div>
+          <div>
+            <h3 style={{margin: 0, fontSize: '24px', fontWeight: '700', color: '#2d3748'}}>
+              {attendanceData.length - presentCount}
+            </h3>
+            <p style={{margin: 0, color: '#718096', fontSize: '14px'}}>Absent Today</p>
+          </div>
+        </motion.div>
+
+        <motion.div 
+          style={{
+            background: 'white',
+            padding: '20px',
+            borderRadius: '12px',
+            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px'
+          }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <div style={{
+            width: '50px',
+            height: '50px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white'
+          }}>
+            <FaPercentage style={{fontSize: '20px'}} />
+          </div>
+          <div>
+            <h3 style={{margin: 0, fontSize: '24px', fontWeight: '700', color: '#2d3748'}}>
+              {attendanceRate}%
+            </h3>
+            <p style={{margin: 0, color: '#718096', fontSize: '14px'}}>Attendance Rate</p>
+          </div>
+        </motion.div>
       </div>
 
-      {/* Summary Cards */}
-      <div className="summary-cards">
-        <div className="summary-card">
-          <div className="card-icon present">✅</div>
-          <div className="card-content">
-            <h3>Present</h3>
-            <p className="card-number">{attendanceData.summary.present}</p>
-            <span className="card-subtitle">Agents</span>
-          </div>
-        </div>
-        <div className="summary-card">
-          <div className="card-icon absent">❌</div>
-          <div className="card-content">
-            <h3>Absent</h3>
-            <p className="card-number">{attendanceData.summary.absent}</p>
-            <span className="card-subtitle">Agents</span>
-          </div>
-        </div>
-        <div className="summary-card">
-          <div className="card-icon late">⏰</div>
-          <div className="card-content">
-            <h3>Late Arrivals</h3>
-            <p className="card-number">{attendanceData.summary.late}</p>
-            <span className="card-subtitle">Agents</span>
-          </div>
-        </div>
-        <div className="summary-card">
-          <div className="card-icon leave">🏖️</div>
-          <div className="card-content">
-            <h3>On Leave</h3>
-            <p className="card-number">{attendanceData.summary.onLeave}</p>
-            <span className="card-subtitle">Agents</span>
-          </div>
-        </div>
-        <div className="summary-card">
-          <div className="card-icon rate">📊</div>
-          <div className="card-content">
-            <h3>Attendance Rate</h3>
-            <p className="card-number">{attendanceData.summary.attendanceRate}%</p>
-            <span className="card-subtitle">Overall</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Daily Attendance */}
-      <div className="attendance-section">
-        <h3>Daily Attendance - {new Date(selectedDate).toLocaleDateString()}</h3>
-        <div className="attendance-table">
-          <table>
+      {/* Attendance Table */}
+      <motion.div 
+        style={{
+          background: 'white',
+          borderRadius: '16px',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+          overflow: 'hidden'
+        }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+      >
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
-              <tr>
-                <th>Agent</th>
-                <th>Check In</th>
-                <th>Check Out</th>
-                <th>Status</th>
-                <th>Location</th>
-                <th>Working Hours</th>
-                <th>Late By</th>
-                <th>Actions</th>
+              <tr style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+                <th style={{ color: 'white', padding: '16px', textAlign: 'left', fontWeight: '600' }}>Agent</th>
+                <th style={{ color: 'white', padding: '16px', textAlign: 'left', fontWeight: '600' }}>Status</th>
+                <th style={{ color: 'white', padding: '16px', textAlign: 'left', fontWeight: '600' }}>Check In</th>
+                <th style={{ color: 'white', padding: '16px', textAlign: 'left', fontWeight: '600' }}>Check Out</th>
+                <th style={{ color: 'white', padding: '16px', textAlign: 'left', fontWeight: '600' }}>Working Hours</th>
               </tr>
             </thead>
             <tbody>
-              {attendanceData.dailyAttendance.map(record => (
-                <tr key={record.id}>
-                  <td>
-                    <div className="agent-info">
-                      <div className="agent-avatar">
-                        {record.name.split(' ').map(n => n[0]).join('')}
-                      </div>
-                      {record.name}
-                    </div>
+              {attendanceData.map((record) => (
+                <tr 
+                  key={record.id}
+                  style={{
+                    borderBottom: '1px solid #e2e8f0',
+                    transition: 'background 0.2s ease'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.background = '#f8fafc'}
+                  onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
+                >
+                  <td style={{ padding: '16px', fontWeight: '600', color: '#2d3748' }}>
+                    {record.agent}
                   </td>
-                  <td className={record.checkIn === '-' ? 'absent' : ''}>{record.checkIn}</td>
-                  <td className={record.checkOut === '-' ? 'absent' : ''}>{record.checkOut}</td>
-                  <td>
-                    <span 
-                      className="status-badge"
-                      style={{ backgroundColor: getStatusColor(record.status) }}
-                    >
+                  <td style={{ padding: '16px' }}>
+                    <span style={{
+                      padding: '4px 12px',
+                      borderRadius: '12px',
+                      fontSize: '12px',
+                      fontWeight: '600',
+                      color: 'white',
+                      backgroundColor: getStatusColor(record.status),
+                      textTransform: 'capitalize'
+                    }}>
                       {record.status}
                     </span>
                   </td>
-                  <td>{record.location}</td>
-                  <td>{record.workingHours}</td>
-                  <td>
-                    {record.lateMinutes > 0 ? (
-                      <span className="late-time">{record.lateMinutes} mins</span>
-                    ) : (
-                      <span className="on-time">On Time</span>
-                    )}
+                  <td style={{ padding: '16px', color: '#2d3748' }}>
+                    {record.checkIn || '-'}
                   </td>
-                  <td>
-                    <div className="action-buttons">
-                      {record.status === 'absent' && (
-                        <button className="btn-mark-present">Mark Present</button>
-                      )}
-                      {record.status === 'late' && (
-                        <button className="btn-excuse">Excuse</button>
-                      )}
-                      <button className="btn-view">View</button>
-                    </div>
+                  <td style={{ padding: '16px', color: '#2d3748' }}>
+                    {record.checkOut || '-'}
+                  </td>
+                  <td style={{ padding: '16px', color: '#2d3748' }}>
+                    {record.checkIn && record.checkOut ? '9h 15m' : '-'}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
-
-      <div className="attendance-content">
-        {/* Monthly Trends */}
-        <div className="trends-section">
-          <h3>Monthly Attendance Trends</h3>
-          <div className="trends-grid">
-            {attendanceData.monthlyStats.map(month => (
-              <div key={month.month} className="trend-card">
-                <h4>{month.month}</h4>
-                <div className="trend-stats">
-                  <div className="stat">
-                    <span className="label">Present:</span>
-                    <span className="value">{month.present}</span>
-                  </div>
-                  <div className="stat">
-                    <span className="label">Absent:</span>
-                    <span className="value absent">{month.absent}</span>
-                  </div>
-                  <div className="stat">
-                    <span className="label">Late:</span>
-                    <span className="value late">{month.late}</span>
-                  </div>
-                </div>
-                <div className="attendance-rate">
-                  <div className="rate-label">Attendance Rate</div>
-                  <div className="rate-value">{month.rate}%</div>
-                  <div className="progress-bar">
-                    <div 
-                      className="progress-fill"
-                      style={{ 
-                        width: `${month.rate}%`,
-                        backgroundColor: month.rate >= 90 ? '#10B981' : 
-                                       month.rate >= 80 ? '#F59E0B' : '#EF4444'
-                      }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Leave Requests */}
-        <div className="leave-section">
-          <h3>Leave Requests</h3>
-          <div className="leave-requests">
-            {attendanceData.leaveRequests.map(request => (
-              <div key={request.id} className="leave-card">
-                <div className="leave-header">
-                  <div className="requester-info">
-                    <div className="requester-avatar">
-                      {request.name.split(' ').map(n => n[0]).join('')}
-                    </div>
-                    <div>
-                      <div className="requester-name">{request.name}</div>
-                      <div className="leave-type">{request.type}</div>
-                    </div>
-                  </div>
-                  <span className={`status-badge ${request.status}`}>
-                    {request.status}
-                  </span>
-                </div>
-                <div className="leave-details">
-                  <div className="date-range">
-                    {new Date(request.from).toLocaleDateString()} - {new Date(request.to).toLocaleDateString()}
-                  </div>
-                  <div className="reason">{request.reason}</div>
-                </div>
-                {request.status === 'pending' && (
-                  <div className="leave-actions">
-                    <button 
-                      className="btn-approve"
-                      onClick={() => handleApproveLeave(request.id)}
-                    >
-                      Approve
-                    </button>
-                    <button 
-                      className="btn-reject"
-                      onClick={() => handleRejectLeave(request.id)}
-                    >
-                      Reject
-                    </button>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Quick Actions */}
-      <div className="quick-actions">
-        <h3>Quick Actions</h3>
-        <div className="action-buttons-grid">
-          <button className="action-btn">
-            📥 Import Attendance
-          </button>
-          <button className="action-btn">
-            📊 Generate Report
-          </button>
-          <button className="action-btn">
-            ⚙️ Configure Settings
-          </button>
-          <button className="action-btn">
-            👥 Bulk Update
-          </button>
-        </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

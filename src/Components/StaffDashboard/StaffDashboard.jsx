@@ -11,9 +11,11 @@ import TeamOverview from './TeamOverview/TeamOverview';
 import Attendance from './Attendance/Attendance'; 
 import TargetSetting from './TargetSetting/TargetSetting'; 
 import StaffProfile from '../Profile/Profile';
+import Settings from '../Settings/Settings';
+import Notifications from '../CollectionAgent/Notifications/Notifications';
 
 const StaffDashboard = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [userData, setUserData] = useState({
@@ -32,12 +34,10 @@ const StaffDashboard = () => {
   useEffect(() => {
     const loadStaffData = () => {
       try {
-        const userName = user.username;
-        
-        const userEmail = user.email;
-        
-        const userRole = user.role;
-
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const userName = user.username || 'Staff Manager';
+        const userEmail = user.email || 'staff@lms.com';
+        const userRole = user.role || 'Staff Manager';
         const department = localStorage.getItem('department') || 'Operations';
 
         // Generate initials from username
@@ -68,8 +68,13 @@ const StaffDashboard = () => {
     };
 
     loadStaffData();
+    
+    // Listen for storage changes
     window.addEventListener('storage', loadStaffData);
-    return () => window.removeEventListener('storage', loadStaffData);
+    
+    return () => {
+      window.removeEventListener('storage', loadStaffData);
+    };
   }, []);
 
   // Close dropdowns when clicking outside
@@ -139,7 +144,15 @@ const StaffDashboard = () => {
             </div>
             
             <div className={styles.notificationFooter}>
-              <button className={styles.viewAllButton}>View All Notifications</button>
+              <button 
+                className={styles.viewAllButton}
+                onClick={() => {
+                  setShowNotifications(false);
+                  window.location.href = '/staff/notifications';
+                }}
+              >
+                View All Notifications
+              </button>
             </div>
           </div>
         </div>
@@ -174,7 +187,13 @@ const StaffDashboard = () => {
                 <span>My Profile</span>
               </button>
               
-              <button className={styles.menuItem}>
+              <button 
+                className={styles.menuItem}
+                onClick={() => {
+                  setShowProfileDropdown(false);
+                  window.location.href = '/staff/settings';
+                }}
+              >
                 <svg className={styles.menuIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <circle cx="12" cy="12" r="3" />
                   <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
@@ -215,7 +234,19 @@ const StaffDashboard = () => {
                   </svg>
                 </button>
               )}
-              <h1 className={styles.title}>Staff Management Dashboard</h1>
+              
+              {/* Search Bar */}
+              <div className={styles.searchContainer}>
+                <svg className={styles.searchIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <circle cx="11" cy="11" r="8"/>
+                  <path d="m21 21-4.35-4.35"/>
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Search loans, customers..."
+                  className={styles.searchInput}
+                />
+              </div>
             </div>
             
             <div className={styles.headerRight}>
@@ -279,6 +310,8 @@ const StaffDashboard = () => {
             <Route path="/attendance" element={<Attendance />} />
             <Route path="/targets" element={<TargetSetting />} />
             <Route path="/profile" element={<StaffProfile />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/notifications" element={<Notifications />} />
             <Route path="/" element={<StaffOverview />} />
           </Routes>
         </div>

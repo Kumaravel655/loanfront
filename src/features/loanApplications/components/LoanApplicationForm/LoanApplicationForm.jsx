@@ -3,7 +3,7 @@ import axios from 'axios';
 import styles from './LoanApplicationForm.module.css';
 import Button from '../../../../components/common/Button/Button';
 
-const LoanApplicationForm = () => {
+const LoanApplicationForm = ({ onSuccess }) => {
   const [step, setStep] = useState(1);
   const totalSteps = 3; // No document upload
 
@@ -106,6 +106,11 @@ const LoanApplicationForm = () => {
 
       setSubmitSuccess('Loan application submitted successfully!');
       console.log(response.data);
+      
+      // Call success callback to refresh parent list
+      if (onSuccess) {
+        setTimeout(() => onSuccess(), 1500);
+      }
     } catch (err) {
       console.error(err);
       if (err.response) console.error('Response data:', err.response.data);

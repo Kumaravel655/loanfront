@@ -1,78 +1,153 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
- 
-const PendingDuesList = () => {
+import React, { useState, useEffect } from 'react';
+import { loanService } from '../../../services/loanService';
+import { FaExclamationTriangle, FaClock, FaDollarSign, FaCalendarAlt } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import './PendingDues.css';
+
+const PendingDues = () => {
   const [pendingDues, setPendingDues] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const token = localStorage.getItem("token");
+  const [stats, setStats] = useState({ total: 0, overdue: 0, urgent: 0 });
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
 
   useEffect(() => {
-    const fetchPendingDues = async () => {
-      try {
-        const response = await axios.get("http://127.0.0.1:8000/api/auth/loan-schedules/", {
-          headers: { Authorization: `Token ${token}` },
-        });
-
-        // Filter pending or due statuses
-        const filtered = response.data.filter(
-          (item) =>
-            item.status?.toLowerCase() === "pending" ||
-            item.status?.toLowerCase() === "due"
-        );
-
-        setPendingDues(filtered);
-      } catch (err) {
-        console.error("Error fetching pending dues:", err);
-        setError("Failed to fetch pending dues.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchPendingDues();
-  }, [token]);
+  }, []);
 
-  if (loading) return <p>Loading pending dues...</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
+  const fetchPendingDues = async () => {
+    try {
+      const schedules = await loanService.getLoanSchedules();
+      
+      const userPending = schedules.filter(s => 
+        s.assigned_to === user?.id && s.status === 'pending'
+      );
+      
+      const today = new Date();
+      const overdue = userPending.filter(s => new Date(s.due_date) < today);
+      const urgent = userPending.filter(s => {
+        const dueDate = new Date(s.due_date);
+        const diffDays = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+        return diffDays <= 3 && diffDays >= 0;
+      });
+      
+      const totalAmount = userPending.reduce((sum, s) => sum + parseFloat(s.total_due || 0), 0);
+      
+      setPendingDues(userPending.sort((a, b) => new Date(a.due_date) - new Date(b.due_date)));
+      setStats({ total: totalAmount, overdue: overdue.length, urgent: urgent.length });
+    } catch (error) {
+      console.error('Error fetching pending dues:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      minimumFractionDigits: 0
+    }).format(amount);
+  };
+
+  const getDaysUntilDue = (dueDate) => {
+    const today = new Date();
+    const due = new Date(dueDate);
+    const diffTime = due - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
+  const getUrgencyClass = (dueDate) => {
+    const days = getDaysUntilDue(dueDate);
+    if (days < 0) return 'overdue';
+    if (days <= 3) return 'urgent';
+    return 'normal';
+  };
+
+  if (loading) {
+    return (
+      <div className="pending-dues">
+        <div className="loading">Loading pending dues...</div>
+      </div>
+    );
+  }
 
   return (
-    <div className="card border-0 shadow-sm">
-      <div className="card-header bg-danger text-white fw-semibold">
-        Pending Dues List
+    <div className="pending-dues">
+      <div className="page-header">
+        <h1><FaExclamationTriangle /> Pending Dues</h1>
+        <p>View and manage overdue loan payments</p>
       </div>
-      <div className="card-body">
+      
+      <div className="dues-stats">
+        <div className="stat-card">
+          <FaDollarSign style={{fontSize: '2rem', color: '#f59e0b'}} />
+          <h3>Total Pending</h3>
+          <p className="stat-number">{formatCurrency(stats.total)}</p>
+        </div>
+        <div className="stat-card">
+          <FaExclamationTriangle style={{fontSize: '2rem', color: '#ef4444'}} />
+          <h3>Overdue</h3>
+          <p className="stat-number">{stats.overdue}</p>
+        </div>
+        <div className="stat-card">
+          <FaClock style={{fontSize: '2rem', color: '#f59e0b'}} />
+          <h3>Urgent (≤3 days)</h3>
+          <p className="stat-number">{stats.urgent}</p>
+        </div>
+      </div>
+
+      <div className="dues-table-container">
         {pendingDues.length === 0 ? (
-          <p className="text-muted text-center">🎉 No pending dues found.</p>
+          <div className="no-data">No pending dues found</div>
         ) : (
-          <table className="table table-hover table-bordered align-middle text-center">
-            <thead className="table-light">
+          <table className="dues-table">
+            <thead>
               <tr>
                 <th>Loan ID</th>
-                <th>Installment No</th>
+                <th>Installment</th>
                 <th>Due Date</th>
-                <th>Principal</th>
-                <th>Interest</th>
-                <th>Total Due</th>
-                <th>Remaining Principal</th>
-                <th>Status</th>
+                <th>Amount</th>
+                <th>Days</th>
+                <th>Priority</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {pendingDues.map((row) => (
-                <tr key={row.id}>
-                  <td>{row.loan}</td>
-                  <td>{row.installment_no}</td>
-                  <td>{new Date(row.due_date).toLocaleDateString()}</td>
-                  <td>₹{row.principal_amount}</td>
-                  <td>₹{row.interest_amount}</td>
-                  <td>₹{row.total_due}</td>
-                  <td>₹{row.remaining_principal}</td>
-                  <td>
-                    <StatusBadge status={row.status} />
-                  </td>
-                </tr>
-              ))}
+              {pendingDues.map((due) => {
+                const days = getDaysUntilDue(due.due_date);
+                const urgencyClass = getUrgencyClass(due.due_date);
+                
+                return (
+                  <tr key={due.id} className={urgencyClass}>
+                    <td>#{due.loan}</td>
+                    <td>{due.installment_no}</td>
+                    <td>{new Date(due.due_date).toLocaleDateString()}</td>
+                    <td>{formatCurrency(due.total_due)}</td>
+                    <td>
+                      <span className={`days-badge ${urgencyClass}`}>
+                        {days < 0 ? `${Math.abs(days)} days overdue` : 
+                         days === 0 ? 'Due today' : 
+                         `${days} days left`}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={`priority-badge ${urgencyClass}`}>
+                        {urgencyClass === 'overdue' ? 'OVERDUE' :
+                         urgencyClass === 'urgent' ? 'URGENT' : 'NORMAL'}
+                      </span>
+                    </td>
+                    <td>
+                      <Link 
+                        to={`/agent/collect/${due.loan}`}
+                        className="collect-btn"
+                      >
+                        Collect
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}
@@ -81,4 +156,4 @@ const PendingDuesList = () => {
   );
 };
 
-export default PendingDuesList;
+export default PendingDues;
