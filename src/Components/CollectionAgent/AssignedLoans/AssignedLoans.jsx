@@ -30,15 +30,15 @@ const AssignedLoans = () => {
       setLoading(true);
       setError("");
       
-      // Fetch loan schedules assigned to current user
       const schedules = await loanService.getLoanSchedules();
       
-      // Filter schedules for current user
+      // Filter schedules assigned to current user
       const userSchedules = schedules.filter(schedule => 
         schedule.assigned_to === user?.id
       );
       
       setAssignedLoans(userSchedules);
+      
     } catch (err) {
       console.error('Error fetching assigned loans:', err);
       setError("Failed to load assigned loan schedules. Please try again.");

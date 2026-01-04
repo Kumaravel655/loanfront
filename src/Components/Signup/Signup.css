@@ -1,114 +1,95 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
-
-.signup-container {
-  height: 100vh;
+.signup-page {
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #8ec5fc, #e0c3fc);
-  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 .signup-card {
-  width: 380px;
-  backdrop-filter: blur(12px);
-  background: rgba(19, 9, 9, 0.2);
-  border-radius: 16px;
-  padding: 40px 35px;
-  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: #2f2b2b;
-  text-align: center;
-  animation: fadeIn 0.6s ease-in-out;
-}
-
-.signup-card h2 {
-  margin-bottom: 25px;
-  font-weight: 600;
-  color: #130f0f;
-  letter-spacing: 1px;
-}
-
-.input-box {
-  position: relative;
-  display: flex;
-  align-items: center;
-  margin-bottom: 18px;
-  background: rgba(255, 255, 255, 0.15);
+  background: white;
+  padding: 40px;
   border-radius: 10px;
-  padding: 10px 12px;
-  transition: all 0.3s ease;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 450px;
 }
 
-.input-box:hover {
-  background: rgba(255, 255, 255, 0.25);
+.signup-title {
+  text-align: center;
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 24px;
+  font-weight: 600;
 }
 
-.icon {
-  margin-right: 10px;
-  color: #2a2727cc;
-  font-size: 18px;
+.signup-subtitle {
+  text-align: center;
+  color: #666;
+  margin-bottom: 30px;
 }
 
-.input-box input,
-.input-box select {
-  flex: 1;
-  border: none;
-  background: none;
+.signup-form {
+  margin-bottom: 20px;
+}
+
+.input-group {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.input-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+  z-index: 1;
+}
+
+.input-group input,
+.input-group select {
+  width: 100%;
+  padding: 15px 15px 15px 45px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+.input-group input:focus,
+.input-group select:focus {
   outline: none;
-  color: #282323;
-  font-size: 15px;
-}
-
-.input-box input::placeholder,
-.input-box select {
-  color: #352f2f;
-}
-
-.input-box select {
-  background: transparent;
-  appearance: none;
-  color: #181616;
-  cursor: pointer;
+  border-color: #667eea;
 }
 
 .signup-btn {
   width: 100%;
-  padding: 12px;
+  padding: 15px;
+  background: #667eea;
+  color: white;
   border: none;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #4c6ef5, #7950f2);
-  color: #211f1f;
+  border-radius: 5px;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
-  transition: 0.3s;
+  transition: background 0.3s;
 }
 
 .signup-btn:hover {
-  transform: translateY(-2px);
-  background: linear-gradient(135deg, #364fc7, #5f3dc4);
+  background: #5a6fd8;
 }
 
-.bottom-text {
-  margin-top: 18px;
-  color: #f0f0f0;
-  font-size: 14px;
+.signup-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
 }
 
-.bottom-text a {
-  color: #fff;
-  font-weight: 500;
-  text-decoration: underline;
+.login-link {
+  text-align: center;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.login-link a {
+  color: #667eea;
+  text-decoration: none;
 }

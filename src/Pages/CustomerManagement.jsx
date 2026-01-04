@@ -1,6 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { loanService } from "../services/loanService";
-import { FaUsers, FaPlus, FaUserCheck, FaUserPlus, FaSearch, FaDownload, FaFilter, FaPhone, FaEnvelope, FaEye, FaEdit, FaTimes } from 'react-icons/fa';
+import { 
+  Users, 
+  Plus, 
+  UserCheck, 
+  UserPlus, 
+  Search, 
+  Download, 
+  Filter, 
+  Phone, 
+  Mail, 
+  Eye, 
+  Edit, 
+  X,
+  Trash2
+} from 'lucide-react';
 
 const CustomerManagement = () => {
   const [customers, setCustomers] = useState([]);
@@ -8,8 +22,10 @@ const CustomerManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [editingCustomer, setEditingCustomer] = useState(null);
   const [newCustomer, setNewCustomer] = useState({
     full_name: '',
     phone: '',
@@ -44,6 +60,34 @@ const CustomerManagement = () => {
       fetchCustomers();
     } catch (error) {
       console.error('Error creating customer:', error);
+    }
+  };
+
+  const handleEditCustomer = (customer) => {
+    setEditingCustomer(customer);
+    setShowEditModal(true);
+  };
+
+  const handleUpdateCustomer = async (e) => {
+    e.preventDefault();
+    try {
+      await loanService.updateCustomer(editingCustomer.customer_id, editingCustomer);
+      setShowEditModal(false);
+      setEditingCustomer(null);
+      fetchCustomers();
+    } catch (error) {
+      console.error('Error updating customer:', error);
+    }
+  };
+
+  const handleDeleteCustomer = async (customerId) => {
+    if (window.confirm('Are you sure you want to delete this customer?')) {
+      try {
+        await loanService.deleteCustomer(customerId);
+        fetchCustomers();
+      } catch (error) {
+        console.error('Error deleting customer:', error);
+      }
     }
   };
 
@@ -105,7 +149,7 @@ const CustomerManagement = () => {
             fontWeight: '700',
             color: '#2d3748'
           }}>
-            <FaUsers style={{marginRight: '12px', color: '#667eea'}} />
+            <Users style={{marginRight: '12px', color: '#667eea'}} size={32} />
             Customer Management
           </h1>
           <p style={{
@@ -116,35 +160,71 @@ const CustomerManagement = () => {
             Manage customer profiles and track their loan history
           </p>
         </div>
-        <button 
-          onClick={() => setShowAddModal(true)}
-          style={{
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            color: 'white',
-            border: 'none',
-            padding: '12px 24px',
-            borderRadius: '12px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            fontSize: '14px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            transition: 'all 0.3s ease',
-            boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)'
-          }}
-          onMouseOver={(e) => {
-            e.target.style.transform = 'translateY(-2px)';
-            e.target.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.4)';
-          }}
-          onMouseOut={(e) => {
-            e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.3)';
-          }}
-        >
-          <FaPlus />
-          Add Customer
-        </button>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '16px'
+        }}>
+          <div style={{ position: 'relative', minWidth: '300px' }}>
+            <Search size={16} style={{
+              position: 'absolute',
+              left: '12px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              color: '#9ca3af'
+            }} />
+            <input
+              type="text"
+              placeholder="Search loans, customers, agents..."
+              style={{
+                width: '100%',
+                padding: '10px 16px 10px 40px',
+                border: '2px solid #e5e7eb',
+                borderRadius: '25px',
+                fontSize: '14px',
+                outline: 'none',
+                transition: 'all 0.3s ease'
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#667eea';
+                e.target.style.boxShadow = '0 0 0 3px rgba(102, 126, 234, 0.1)';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = '#e5e7eb';
+                e.target.style.boxShadow = 'none';
+              }}
+            />
+          </div>
+          <button 
+            onClick={() => setShowAddModal(true)}
+            style={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              color: 'white',
+              border: 'none',
+              padding: '12px 24px',
+              borderRadius: '12px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              fontSize: '14px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.transform = 'translateY(-2px)';
+              e.target.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.4)';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.transform = 'translateY(0)';
+              e.target.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.3)';
+            }}
+          >
+            <Plus size={16} />
+            Add Customer
+          </button>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -173,7 +253,7 @@ const CustomerManagement = () => {
             justifyContent: 'center',
             color: 'white'
           }}>
-            <FaUsers style={{fontSize: '20px'}} />
+            <Users size={20} />
           </div>
           <div>
             <h3 style={{margin: 0, fontSize: '24px', fontWeight: '700', color: '#2d3748'}}>
@@ -202,7 +282,7 @@ const CustomerManagement = () => {
             justifyContent: 'center',
             color: 'white'
           }}>
-            <FaUserCheck style={{fontSize: '20px'}} />
+            <UserCheck size={20} />
           </div>
           <div>
             <h3 style={{margin: 0, fontSize: '24px', fontWeight: '700', color: '#2d3748'}}>
@@ -231,7 +311,7 @@ const CustomerManagement = () => {
             justifyContent: 'center',
             color: 'white'
           }}>
-            <FaUserPlus style={{fontSize: '20px'}} />
+            <UserPlus size={20} />
           </div>
           <div>
             <h3 style={{margin: 0, fontSize: '24px', fontWeight: '700', color: '#2d3748'}}>
@@ -259,13 +339,12 @@ const CustomerManagement = () => {
         flexWrap: 'wrap'
       }}>
         <div style={{ flex: 1, minWidth: '300px', position: 'relative' }}>
-          <FaSearch style={{
+          <Search size={16} style={{
             position: 'absolute',
             left: '12px',
             top: '50%',
             transform: 'translateY(-50%)',
-            color: '#9ca3af',
-            fontSize: '14px'
+            color: '#9ca3af'
           }} />
           <input
             type="text"
@@ -340,7 +419,7 @@ const CustomerManagement = () => {
               cursor: 'pointer',
               fontSize: '12px'
             }}>
-              <FaDownload style={{marginRight: '4px'}} />
+              <Download size={12} style={{marginRight: '4px'}} />
               Export
             </button>
             <button style={{
@@ -351,7 +430,7 @@ const CustomerManagement = () => {
               cursor: 'pointer',
               fontSize: '12px'
             }}>
-              <FaFilter style={{marginRight: '4px'}} />
+              <Filter size={12} style={{marginRight: '4px'}} />
               Filter
             </button>
           </div>
@@ -409,11 +488,11 @@ const CustomerManagement = () => {
                     <td style={{ padding: '16px' }}>
                       <div>
                         <div style={{ color: '#2d3748', fontSize: '14px', marginBottom: '2px' }}>
-                          <FaPhone style={{marginRight: '6px', color: '#6b7280', fontSize: '12px'}} />
+                          <Phone size={12} style={{marginRight: '6px', color: '#6b7280'}} />
                           {customer.phone || 'N/A'}
                         </div>
                         <div style={{ color: '#6b7280', fontSize: '12px' }}>
-                          <FaEnvelope style={{marginRight: '6px', color: '#6b7280', fontSize: '10px'}} />
+                          <Mail size={10} style={{marginRight: '6px', color: '#6b7280'}} />
                           {customer.email || 'No email'}
                         </div>
                       </div>
@@ -462,23 +541,44 @@ const CustomerManagement = () => {
                             gap: '4px'
                           }}
                         >
-                          <FaEye style={{fontSize: '10px'}} />
+                          <Eye size={10} />
                           View
                         </button>
-                        <button style={{
-                          padding: '6px 12px',
-                          background: '#10b981',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '6px',
-                          fontSize: '12px',
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '4px'
-                        }}>
-                          <FaEdit style={{fontSize: '10px'}} />
+                        <button 
+                          onClick={() => handleEditCustomer(customer)}
+                          style={{
+                            padding: '6px 12px',
+                            background: '#10b981',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px',
+                            fontSize: '12px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                          }}
+                        >
+                          <Edit size={10} />
                           Edit
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteCustomer(customer.customer_id)}
+                          style={{
+                            padding: '6px 12px',
+                            background: '#ef4444',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px',
+                            fontSize: '12px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                          }}
+                        >
+                          <Trash2 size={10} />
+                          Delete
                         </button>
                       </div>
                     </td>
@@ -493,7 +593,7 @@ const CustomerManagement = () => {
             textAlign: 'center',
             color: '#6b7280'
           }}>
-            <FaUsers style={{fontSize: '48px', marginBottom: '16px', color: '#d1d5db'}} />
+            <Users size={48} style={{marginBottom: '16px', color: '#d1d5db'}} />
             <h3 style={{margin: '0 0 8px 0', color: '#374151'}}>No customers found</h3>
             <p style={{margin: 0}}>Try adjusting your search criteria or add a new customer</p>
           </div>
@@ -547,7 +647,7 @@ const CustomerManagement = () => {
                 zIndex: 1000001
               }}
             >
-              <FaTimes />
+              <X />
             </button>
 
             <div style={{
@@ -569,7 +669,7 @@ const CustomerManagement = () => {
                   justifyContent: 'center',
                   color: 'white'
                 }}>
-                  <FaUserPlus style={{fontSize: '20px'}} />
+                  <UserPlus size={20} />
                 </div>
                 <div>
                   <h2 style={{
@@ -773,6 +873,60 @@ const CustomerManagement = () => {
                 >
                   Create Customer
                 </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Customer Modal */}
+      {showEditModal && editingCustomer && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.75)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 999999,
+          backdropFilter: 'blur(8px)'
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '20px',
+            width: '90%',
+            maxWidth: '500px',
+            padding: '32px'
+          }}>
+            <h2>Edit Customer</h2>
+            <form onSubmit={handleUpdateCustomer}>
+              <input
+                type="text"
+                value={editingCustomer.full_name}
+                onChange={(e) => setEditingCustomer({...editingCustomer, full_name: e.target.value})}
+                placeholder="Full Name"
+                style={{width: '100%', padding: '12px', margin: '8px 0', border: '1px solid #ddd', borderRadius: '8px'}}
+              />
+              <input
+                type="tel"
+                value={editingCustomer.phone}
+                onChange={(e) => setEditingCustomer({...editingCustomer, phone: e.target.value})}
+                placeholder="Phone"
+                style={{width: '100%', padding: '12px', margin: '8px 0', border: '1px solid #ddd', borderRadius: '8px'}}
+              />
+              <input
+                type="email"
+                value={editingCustomer.email}
+                onChange={(e) => setEditingCustomer({...editingCustomer, email: e.target.value})}
+                placeholder="Email"
+                style={{width: '100%', padding: '12px', margin: '8px 0', border: '1px solid #ddd', borderRadius: '8px'}}
+              />
+              <div style={{display: 'flex', gap: '12px', marginTop: '20px'}}>
+                <button type="button" onClick={() => setShowEditModal(false)} style={{padding: '12px 24px', border: '1px solid #ddd', borderRadius: '8px', background: 'white'}}>Cancel</button>
+                <button type="submit" style={{padding: '12px 24px', border: 'none', borderRadius: '8px', background: '#10b981', color: 'white'}}>Update</button>
               </div>
             </form>
           </div>

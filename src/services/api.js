@@ -45,7 +45,7 @@ export const endpoints = {
   // Auth
   login: '/auth/login/',
   logout: '/auth/logout/',
-  signup: '/auth/signup/',
+  signup: '/auth/register/',
   changePassword: '/auth/change-password/',
   
   // Users
@@ -56,15 +56,15 @@ export const endpoints = {
   
   // Core entities
   customers: '/auth/customers/',
-  loanTypes: '/loan-types/',
+  loanTypes: '/auth/loan-types/',
   loans: '/auth/loans/',
   loanDues: '/loan-dues/',
   loanSchedules: '/auth/loan-schedules/',
   
   // Collections
-  dailyCollections: '/daily-collections/',
-  attendance: '/attendance/',
-  notifications: '/notifications/',
+  dailyCollections: '/auth/daily-collections/',
+  attendance: '/auth/attendance/',
+  notifications: '/auth/notifications/',
 };
 
 export default api;

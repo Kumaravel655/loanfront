@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import { loanService } from '../services/loanService';
 import { motion } from 'framer-motion';
-import { FaBriefcase, FaDollarSign, FaClock, FaExclamationTriangle, FaUsers, FaUserTie, FaChartBar, FaHandPaper, FaClipboardList, FaSync, FaCheck, FaBolt, FaChartLine, FaBullseye } from 'react-icons/fa';
+import { FaBriefcase, FaDollarSign, FaClock, FaExclamationTriangle, FaUsers, FaUserTie, FaChartBar, FaHandPaper, FaClipboardList, FaSync, FaCheck, FaBolt, FaChartLine, FaBullseye, FaSearch } from 'react-icons/fa';
 
 import Sidebar from "../components/layout/Sidebar/Sidebar";
 import Navbar from "../components/layout/Navbar/Navbar";
@@ -136,12 +136,7 @@ const DashboardOverview = () => {
   };
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(amount);
+    return `₹${amount.toLocaleString('en-IN')}`;
   };
 
   if (dashboardData.loading) {
@@ -166,13 +161,48 @@ const DashboardOverview = () => {
           <h1><FaChartBar /> Admin Dashboard</h1>
           <p>Monitor and manage your loan management system</p>
         </div>
-        <div className="date-info">
-          <span>{new Date().toLocaleDateString('en-IN', { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-          })}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{ position: 'relative', minWidth: '300px' }}>
+            <FaSearch style={{
+              position: 'absolute',
+              left: '12px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              color: '#9ca3af',
+              fontSize: '14px'
+            }} />
+            <input
+              type="text"
+              placeholder="Search loans, customers, agents..."
+              style={{
+                width: '100%',
+                padding: '10px 16px 10px 40px',
+                border: '2px solid rgba(255,255,255,0.3)',
+                borderRadius: '25px',
+                fontSize: '14px',
+                outline: 'none',
+                background: 'rgba(255,255,255,0.1)',
+                color: 'white',
+                transition: 'all 0.3s ease'
+              }}
+              onFocus={(e) => {
+                e.target.style.background = 'rgba(255,255,255,0.2)';
+                e.target.style.borderColor = 'rgba(255,255,255,0.5)';
+              }}
+              onBlur={(e) => {
+                e.target.style.background = 'rgba(255,255,255,0.1)';
+                e.target.style.borderColor = 'rgba(255,255,255,0.3)';
+              }}
+            />
+          </div>
+          <div className="date-info">
+            <span>{new Date().toLocaleDateString('en-IN', { 
+              weekday: 'long', 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric' 
+            })}</span>
+          </div>
         </div>
       </motion.div>
 

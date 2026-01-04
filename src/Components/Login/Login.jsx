@@ -27,12 +27,10 @@ const Login = () => {
       setLoading(false);
 
       if (response.ok) {
-        // Store token & user info
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("isAuthenticated", true);
 
-        // Role-based navigation
         switch (data.user.role) {
           case "master_admin":
             navigate("/admin/dashboard");
@@ -60,7 +58,7 @@ const Login = () => {
   return (
     <div className="login-page">
       <div className="login-card">
-        <h2 className="login-title">VelanDev Portal</h2>
+        <h2 className="login-title">Loan Management Portal</h2>
         <p className="login-subtitle">Sign in to your account</p>
 
         {errorMsg && <p className="error-msg">{errorMsg}</p>}
@@ -92,13 +90,13 @@ const Login = () => {
             {loading ? "Signing In..." : "Sign In"}
           </button>
         </form>
-         <br/>
+
         <div className="signup">
           <p>Don't have an account? <a href="/signup">Sign Up</a></p>
         </div>
-         
+
         <div className="login-footer">
-          <p>© 2025 VelanDev | Secure Access Portal</p>
+          <p>© 2025 Loan Management System</p>
         </div>
       </div>
     </div>

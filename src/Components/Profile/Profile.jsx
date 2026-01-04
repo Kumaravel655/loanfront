@@ -1,62 +1,107 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { FaUser, FaEnvelope, FaUserTag, FaSignOutAlt } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { FaUser, FaEdit, FaSave, FaTimes, FaSignOutAlt } from "react-icons/fa";
+import { loanService } from "../../services/loanService";
 import "./Profile.css";
 
 const Profile = () => {
-  const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    role: "",
+  });
+  const [editing, setEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    } else {
-      navigate("/"); // redirect to login if not logged in
-    }
-  }, [navigate]);
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    setProfile({
+      name: user.first_name + " " + user.last_name || user.username || "",
+      email: user.email || "",
+      phone: user.phone_number || user.phone || "",
+      role: user.role || "",
+    });
+  }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("isAuthenticated");
-    navigate("/");
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      await loanService.updateProfile(profile);
+      setEditing(false);
+      alert("Profile updated successfully");
+    } catch (error) {
+      alert("Failed to update profile");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  if (!user) {
-    return (
-      <div className="profile-page">
-        <div className="profile-card">
-          <p>Loading user data...</p>
-        </div>
-      </div>
-    );
-  }
+  const handleLogout = () => {
+    if (window.confirm("Are you sure you want to logout?")) {
+      localStorage.clear();
+      window.location.href = "/login";
+    }
+  };
 
   return (
-    <div className="profile-page">
-      <div className="profile-card">
-        <h2>User Profile</h2>
+    <div className="profile-container">
+      <div className="profile-header">
+        <div className="profile-avatar">
+          <FaUser size={40} />
+        </div>
+        <h2>{profile.name}</h2>
+        <p className="profile-role">{profile.role}</p>
+      </div>
 
-        <div className="profile-item">
-          <FaUser className="icon" />
-          <span className="label">Username:</span>
-          <span className="value">{user.username}</span>
+      <div className="profile-form">
+        <div className="form-group">
+          <label>Name</label>
+          <input
+            type="text"
+            value={profile.name}
+            onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+            disabled={!editing}
+          />
         </div>
 
-        <div className="profile-item">
-          <FaEnvelope className="icon" />
-          <span className="label">Email:</span>
-          <span className="value">{user.email}</span>
+        <div className="form-group">
+          <label>Email</label>
+          <input type="email" value={profile.email} disabled />
         </div>
 
-        <div className="profile-item">
-          <FaUserTag className="icon" />
-          <span className="label">Role:</span>
-          <span className="value role">{user.role}</span>
+        <div className="form-group">
+          <label>Phone</label>
+          <input
+            type="tel"
+            value={profile.phone}
+            onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+            disabled={!editing}
+          />
         </div>
 
-        <button className="logout-btn" onClick={handleLogout}>
+        <div className="form-group">
+          <label>Role</label>
+          <input type="text" value={profile.role} disabled />
+        </div>
+      </div>
+
+      <div className="profile-actions">
+        {editing ? (
+          <div className="edit-actions">
+            <button className="btn-cancel" onClick={() => setEditing(false)}>
+              <FaTimes /> Cancel
+            </button>
+            <button className="btn-save" onClick={handleSave} disabled={loading}>
+              <FaSave /> {loading ? "Saving..." : "Save"}
+            </button>
+          </div>
+        ) : (
+          <button className="btn-edit" onClick={() => setEditing(true)}>
+            <FaEdit /> Edit Profile
+          </button>
+        )}
+
+        <button className="btn-logout" onClick={handleLogout}>
           <FaSignOutAlt /> Logout
         </button>
       </div>

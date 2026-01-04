@@ -130,19 +130,35 @@ const LoanApplicationForm = ({ onSuccess }) => {
       {step === 1 && (
         <section>
           <h2 className={styles.stepTitle}>Step 1: Select Customer</h2>
-          <select
-            className={styles.input}
-            value={selectedCustomer?.customer_id || ''}
-            onChange={e => {
-              const customer = customers.find(c => c.customer_id === parseInt(e.target.value));
-              setSelectedCustomer(customer);
-            }}
-          >
-            <option value="">-- Select Customer --</option>
-            {customers.map(c => (
-              <option key={c.customer_id} value={c.customer_id}>{c.full_name}</option>
-            ))}
-          </select>
+          
+          <div className={styles.inputGroup}>
+            <label>Customer *</label>
+            <select
+              className={styles.input}
+              value={selectedCustomer?.customer_id || ''}
+              onChange={e => {
+                const customer = customers.find(c => c.customer_id === parseInt(e.target.value));
+                setSelectedCustomer(customer);
+              }}
+            >
+              <option value="">-- Select Customer --</option>
+              {customers.map(c => (
+                <option key={c.customer_id} value={c.customer_id}>
+                  {c.full_name} - {c.customer_code}
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          {selectedCustomer && (
+            <div className={styles.customerInfo}>
+              <h3>Customer Details</h3>
+              <p><strong>Name:</strong> {selectedCustomer.full_name}</p>
+              <p><strong>Code:</strong> {selectedCustomer.customer_code}</p>
+              <p><strong>Phone:</strong> {selectedCustomer.phone}</p>
+              <p><strong>Email:</strong> {selectedCustomer.email}</p>
+            </div>
+          )}
         </section>
       )}
 
@@ -150,20 +166,87 @@ const LoanApplicationForm = ({ onSuccess }) => {
       {step === 2 && (
         <section>
           <h2 className={styles.stepTitle}>Step 2: Loan Details</h2>
-          <input type="number" placeholder="Loan Amount" className={styles.input} value={loanAmount} onChange={e => setLoanAmount(e.target.value)} />
-          <select className={styles.input} value={loanTypeId} onChange={e => setLoanTypeId(e.target.value)}>
-            <option value="">-- Select Loan Type --</option>
-            {loanTypes.map(t => <option key={t.loan_type_id} value={t.loan_type_id}>{t.name}</option>)}
-          </select>
-          <input type="number" placeholder="Total Due Count" className={styles.input} value={totalDue} onChange={e => setTotalDue(e.target.value)} />
-          <input type="number" placeholder="Interest %" className={styles.input} value={interestPercentage} onChange={e => setInterestPercentage(e.target.value)} />
-          <input type="number" placeholder="Due Amount (auto)" className={styles.input} value={dueAmount} readOnly />
-          <select className={styles.input} value={repaymentMode} onChange={e => setRepaymentMode(e.target.value)}>
-            <option value="">-- Repayment Mode --</option>
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-          </select>
+          
+          <div className={styles.inputGroup}>
+            <label>Loan Amount *</label>
+            <input 
+              type="number" 
+              placeholder="Enter loan amount" 
+              className={styles.input} 
+              value={loanAmount} 
+              onChange={e => setLoanAmount(e.target.value)}
+              min="1000"
+              max="10000000"
+            />
+          </div>
+          
+          <div className={styles.inputGroup}>
+            <label>Loan Type *</label>
+            <select className={styles.input} value={loanTypeId} onChange={e => setLoanTypeId(e.target.value)}>
+              <option value="">-- Select Loan Type --</option>
+              {loanTypes.map(t => <option key={t.loan_type_id} value={t.loan_type_id}>{t.name}</option>)}
+            </select>
+          </div>
+          
+          <div className={styles.inputGroup}>
+            <label>Repayment Period (Months) *</label>
+            <input 
+              type="number" 
+              placeholder="Number of months" 
+              className={styles.input} 
+              value={totalDue} 
+              onChange={e => setTotalDue(e.target.value)}
+              min="1"
+              max="60"
+            />
+          </div>
+          
+          <div className={styles.inputGroup}>
+            <label>Interest Rate (%) *</label>
+            <input 
+              type="number" 
+              placeholder="Annual interest rate" 
+              className={styles.input} 
+              value={interestPercentage} 
+              onChange={e => setInterestPercentage(e.target.value)}
+              min="0"
+              max="50"
+              step="0.1"
+            />
+          </div>
+          
+          <div className={styles.inputGroup}>
+            <label>Monthly EMI (Auto-calculated)</label>
+            <input 
+              type="number" 
+              placeholder="Calculated automatically" 
+              className={styles.input} 
+              value={dueAmount} 
+              readOnly 
+              style={{backgroundColor: '#f5f5f5'}}
+            />
+          </div>
+          
+          <div className={styles.inputGroup}>
+            <label>Repayment Mode *</label>
+            <select className={styles.input} value={repaymentMode} onChange={e => setRepaymentMode(e.target.value)}>
+              <option value="">-- Select Repayment Mode --</option>
+              <option value="monthly">Monthly</option>
+              <option value="weekly">Weekly</option>
+              <option value="daily">Daily</option>
+            </select>
+          </div>
+          
+          {loanAmount && totalDue && interestPercentage && (
+            <div className={styles.loanSummary}>
+              <h3>Loan Summary</h3>
+              <p>Principal Amount: ₹{parseFloat(loanAmount).toLocaleString()}</p>
+              <p>Interest Rate: {interestPercentage}% per annum</p>
+              <p>Loan Term: {totalDue} months</p>
+              <p>Monthly EMI: ₹{dueAmount}</p>
+              <p>Total Amount: ₹{(parseFloat(dueAmount) * parseInt(totalDue)).toLocaleString()}</p>
+            </div>
+          )}
         </section>
       )}
 
@@ -171,22 +254,59 @@ const LoanApplicationForm = ({ onSuccess }) => {
       {step === 3 && (
         <section>
           <h2 className={styles.stepTitle}>Step 3: Review & Submit</h2>
+          
+          <div className={styles.reviewSection}>
+            <h3>Application Review</h3>
+            
+            <div className={styles.reviewItem}>
+              <strong>Customer:</strong> {selectedCustomer?.full_name} ({selectedCustomer?.customer_code})
+            </div>
+            
+            <div className={styles.reviewItem}>
+              <strong>Loan Amount:</strong> ₹{parseFloat(loanAmount).toLocaleString()}
+            </div>
+            
+            <div className={styles.reviewItem}>
+              <strong>Interest Rate:</strong> {interestPercentage}% per annum
+            </div>
+            
+            <div className={styles.reviewItem}>
+              <strong>Repayment Period:</strong> {totalDue} months
+            </div>
+            
+            <div className={styles.reviewItem}>
+              <strong>Monthly EMI:</strong> ₹{dueAmount}
+            </div>
+            
+            <div className={styles.reviewItem}>
+              <strong>Repayment Mode:</strong> {repaymentMode}
+            </div>
+            
+            <div className={styles.reviewItem}>
+              <strong>Total Payable:</strong> ₹{(parseFloat(dueAmount) * parseInt(totalDue)).toLocaleString()}
+            </div>
+          </div>
 
-          {/* Created By input */}
-          <input
-            type="number"
-            placeholder="Created By (User ID)"
-            className={styles.input}
-            value={createdBy}
-            onChange={e => setCreatedBy(e.target.value)}
-          />
+          <div className={styles.inputGroup}>
+            <label>Created By (User ID) *</label>
+            <input
+              type="number"
+              placeholder="Enter your user ID"
+              className={styles.input}
+              value={createdBy}
+              onChange={e => setCreatedBy(e.target.value)}
+            />
+          </div>
 
-          <Button onClick={prevStep} variant="secondary">Previous</Button>
-          <Button onClick={handleSubmit} variant="primary" disabled={submitting}>
-            {submitting ? 'Submitting...' : 'Submit Application'}
-          </Button>
-          {submitError && <p style={{ color: 'red' }}>{submitError}</p>}
-          {submitSuccess && <p style={{ color: 'green' }}>{submitSuccess}</p>}
+          <div className={styles.submitActions}>
+            <Button onClick={prevStep} variant="secondary">Previous</Button>
+            <Button onClick={handleSubmit} variant="primary" disabled={submitting}>
+              {submitting ? 'Submitting...' : 'Submit Application'}
+            </Button>
+          </div>
+          
+          {submitError && <div className={styles.errorMsg}>{submitError}</div>}
+          {submitSuccess && <div className={styles.successMsg}>{submitSuccess}</div>}
         </section>
       )}
 
