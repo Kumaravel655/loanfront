@@ -119,14 +119,44 @@ const RepaymentsCollectionsPage = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
+        style={{
+          background: 'white',
+          padding: '32px',
+          borderRadius: '16px',
+          marginBottom: '24px',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+          border: '1px solid #f1f5f9',
+          textAlign: 'center'
+        }}
       >
-        <div className="header-content">
-          <h1 className="page-title">
-            <FaDollarSign className="title-icon" />
-            Repayments & Collections
-          </h1>
-          <p className="page-subtitle">Monitor and manage loan repayments and collections</p>
+        <div style={{
+          width: '80px',
+          height: '80px',
+          background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+          borderRadius: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          margin: '0 auto 20px',
+          boxShadow: '0 8px 25px rgba(16, 185, 129, 0.3)'
+        }}>
+          <FaDollarSign size={32} color="white" />
         </div>
+        
+        <h1 style={{
+          margin: '0 0 8px 0',
+          fontSize: '28px',
+          fontWeight: '700',
+          color: '#1e293b'
+        }}>Repayments & Collections</h1>
+        
+        <p style={{
+          margin: 0,
+          fontSize: '16px',
+          color: '#64748b',
+          maxWidth: '500px',
+          margin: '0 auto'
+        }}>Monitor and manage loan repayments and collections</p>
       </motion.div>
 
       {/* Stats Cards */}

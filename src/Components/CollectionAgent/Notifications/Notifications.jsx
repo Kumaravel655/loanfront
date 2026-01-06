@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { loanService } from '../../../services/loanService';
-import { FaBell, FaExclamationTriangle } from 'react-icons/fa';
+import { FaBell, FaExclamationTriangle, FaCheckCircle, FaTimes } from 'react-icons/fa';
 import './Notifications.css';
 
 const Notifications = () => {
@@ -62,9 +62,9 @@ const Notifications = () => {
             >
               <div className="notification-icon">
                 {notification.type === 'warning' && <FaExclamationTriangle />}
-                {notification.type === 'success' && '✅'}
+                {notification.type === 'success' && <FaCheckCircle />}
                 {notification.type === 'info' && <FaBell />}
-                {notification.type === 'error' && '❌'}
+                {notification.type === 'error' && <FaTimes />}
               </div>
               <div className="notification-content">
                 <h3>{notification.title}</h3>

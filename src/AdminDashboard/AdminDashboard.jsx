@@ -136,7 +136,7 @@ const DashboardOverview = () => {
   };
 
   const formatCurrency = (amount) => {
-    return `₹${amount.toLocaleString('en-IN')}`;
+    return amount.toLocaleString('en-IN');
   };
 
   if (dashboardData.loading) {
@@ -156,52 +156,63 @@ const DashboardOverview = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
+        style={{
+          background: 'white',
+          padding: '24px 32px',
+          borderRadius: '12px',
+          marginBottom: '24px',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+          border: '1px solid #e5e7eb',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}
       >
-        <div className="welcome-content">
-          <h1><FaChartBar /> Admin Dashboard</h1>
-          <p>Monitor and manage your loan management system</p>
+        <div>
+          <h1 style={{
+            margin: '0 0 4px 0',
+            fontSize: '24px',
+            fontWeight: '600',
+            color: '#111827'
+          }}>Dashboard Overview</h1>
+          
+          <p style={{
+            margin: 0,
+            fontSize: '14px',
+            color: '#6b7280'
+          }}>Here's what's happening with your business today</p>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{ position: 'relative', minWidth: '300px' }}>
-            <FaSearch style={{
-              position: 'absolute',
-              left: '12px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              color: '#9ca3af',
-              fontSize: '14px'
-            }} />
-            <input
-              type="text"
-              placeholder="Search loans, customers, agents..."
-              style={{
-                width: '100%',
-                padding: '10px 16px 10px 40px',
-                border: '2px solid rgba(255,255,255,0.3)',
-                borderRadius: '25px',
-                fontSize: '14px',
-                outline: 'none',
-                background: 'rgba(255,255,255,0.1)',
-                color: 'white',
-                transition: 'all 0.3s ease'
-              }}
-              onFocus={(e) => {
-                e.target.style.background = 'rgba(255,255,255,0.2)';
-                e.target.style.borderColor = 'rgba(255,255,255,0.5)';
-              }}
-              onBlur={(e) => {
-                e.target.style.background = 'rgba(255,255,255,0.1)';
-                e.target.style.borderColor = 'rgba(255,255,255,0.3)';
-              }}
-            />
-          </div>
-          <div className="date-info">
-            <span>{new Date().toLocaleDateString('en-IN', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
+        
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '16px'
+        }}>
+          <div style={{
+            padding: '8px 16px',
+            background: '#f3f4f6',
+            borderRadius: '8px',
+            fontSize: '14px',
+            color: '#374151',
+            fontWeight: '500'
+          }}>
+            {new Date().toLocaleDateString('en-IN', { 
+              weekday: 'short', 
+              month: 'short', 
               day: 'numeric' 
-            })}</span>
+            })}
+          </div>
+          
+          <div style={{
+            width: '40px',
+            height: '40px',
+            background: '#3b82f6',
+            borderRadius: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <FaChartBar size={18} color="white" />
           </div>
         </div>
       </motion.div>
@@ -294,33 +305,99 @@ const DashboardOverview = () => {
       </div>
 
       {/* Charts and Analytics */}
-      <div className="analytics-section">
+      <div className="analytics-section" style={{
+        display: 'grid',
+        gridTemplateColumns: '2fr 1fr',
+        gap: '24px',
+        marginBottom: '32px'
+      }}>
         <motion.div 
           className="chart-card"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.7 }}
+          style={{
+            background: 'white',
+            borderRadius: '16px',
+            padding: '24px',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+            border: '1px solid #f1f5f9'
+          }}
         >
-          <div className="chart-header">
-            <h3><FaChartBar /> Monthly Collection Trend</h3>
-            <span className="chart-subtitle">Last 6 months performance</span>
+          <div className="chart-header" style={{
+            marginBottom: '24px',
+            paddingBottom: '16px',
+            borderBottom: '1px solid #f1f5f9'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <FaChartBar style={{ color: '#3b82f6', fontSize: '18px' }} />
+              <h3 style={{
+                margin: 0,
+                fontSize: '18px',
+                fontWeight: '600',
+                color: '#1e293b'
+              }}>Monthly Collection Trend</h3>
+            </div>
+            <span className="chart-subtitle" style={{
+              fontSize: '14px',
+              color: '#64748b'
+            }}>Last 6 months performance</span>
           </div>
           <div className="chart-content">
-            <div className="chart-bars">
-              {dashboardData.monthlyTrend.map((item, index) => (
-                <div key={item.month} className="chart-bar-container">
-                  <div
-                    className="chart-bar"
-                    style={{ 
-                      height: `${(item.amount / 800000) * 200}px`,
-                      animationDelay: `${index * 0.1}s`
-                    }}
-                    title={`${item.month}: ${formatCurrency(item.amount)}`}
-                  ></div>
-                  <span className="chart-label">{item.month}</span>
-                  <span className="chart-value">{formatCurrency(item.amount)}</span>
-                </div>
-              ))}
+            <div className="chart-bars" style={{
+              display: 'flex',
+              alignItems: 'end',
+              gap: '12px',
+              height: '140px',
+              padding: '0 8px'
+            }}>
+              {dashboardData.monthlyTrend.map((item, index) => {
+                const maxAmount = Math.max(...dashboardData.monthlyTrend.map(i => i.amount));
+                const height = maxAmount > 0 ? (item.amount / maxAmount) * 100 : 15;
+                return (
+                  <div key={item.month} className="chart-bar-container" style={{
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <div
+                      className="chart-bar"
+                      style={{ 
+                        width: '100%',
+                        maxWidth: '40px',
+                        height: `${height}px`,
+                        background: `linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%)`,
+                        borderRadius: '6px 6px 0 0',
+                        transition: 'all 0.3s ease',
+                        cursor: 'pointer',
+                        boxShadow: '0 2px 8px rgba(59, 130, 246, 0.2)',
+                        animation: `slideUp 0.6s ease ${index * 0.1}s both`
+                      }}
+                      title={`${item.month}: ${formatCurrency(item.amount)}`}
+                      onMouseOver={(e) => {
+                        e.target.style.transform = 'scale(1.05)';
+                        e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
+                      }}
+                      onMouseOut={(e) => {
+                        e.target.style.transform = 'scale(1)';
+                        e.target.style.boxShadow = '0 2px 8px rgba(59, 130, 246, 0.2)';
+                      }}
+                    ></div>
+                    <span className="chart-label" style={{
+                      fontSize: '12px',
+                      fontWeight: '500',
+                      color: '#64748b'
+                    }}>{item.month}</span>
+                    <span className="chart-value" style={{
+                      fontSize: '11px',
+                      color: '#94a3b8',
+                      fontWeight: '400'
+                    }}>{formatCurrency(item.amount)}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </motion.div>
@@ -399,11 +476,37 @@ const DashboardOverview = () => {
   );
 };
 
+// Add CSS animations
+const chartStyles = `
+  @keyframes slideUp {
+    0% { 
+      height: 0;
+      opacity: 0;
+    }
+    100% { 
+      opacity: 1;
+    }
+  }
+`;
+
+// Inject styles
+if (typeof document !== 'undefined') {
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = chartStyles;
+  document.head.appendChild(styleSheet);
+}
+
 // Placeholder for under-construction pages
 const PlaceholderPage = ({ title }) => (
   <div className="placeholder-page">
     <div className="placeholder-content">
-      <div className="placeholder-icon">🚧</div>
+      <div className="placeholder-icon" style={{
+        fontSize: '48px',
+        marginBottom: '16px',
+        color: '#f59e0b'
+      }}>
+        <FaExclamationTriangle />
+      </div>
       <h1>{title}</h1>
       <p>This page is under construction. Please check back later.</p>
       <button 

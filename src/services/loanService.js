@@ -175,7 +175,7 @@ export const loanService = {
   },
 
   // Mark notification as read
-  markNotificationRead: async (notificationId) => {
+  markNotificationAsRead: async (notificationId) => {
     try {
       const response = await api.patch(`/auth/notifications/${notificationId}/`, {
         is_read: true

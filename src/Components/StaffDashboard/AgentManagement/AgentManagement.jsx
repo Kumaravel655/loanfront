@@ -273,8 +273,8 @@ const AgentManagement = () => {
 
             <div className="performance-section">
               <div className="performance-metric">
-                <span>Target: ₹{agent.target.toLocaleString()}</span>
-                <span>Collected: ₹{agent.collected.toLocaleString()}</span>
+                <span>Target: {agent.target.toLocaleString()}</span>
+                <span>Collected: {agent.collected.toLocaleString()}</span>
               </div>
               <div className="achievement-bar">
                 <div 
@@ -587,8 +587,8 @@ const AgentManagement = () => {
                   <div style={{padding: '16px', background: '#f0fdf4', borderRadius: '12px'}}>
                     <h4 style={{margin: '0 0 8px 0', color: '#374151'}}>Performance</h4>
                     <div style={{display: 'grid', gap: '8px'}}>
-                      <div><strong>Target:</strong> ₹{selectedAgent.target.toLocaleString()}</div>
-                      <div><strong>Collected:</strong> ₹{selectedAgent.collected.toLocaleString()}</div>
+                      <div><strong>Target:</strong> {selectedAgent.target.toLocaleString()}</div>
+                      <div><strong>Collected:</strong> {selectedAgent.collected.toLocaleString()}</div>
                       <div><strong>Achievement:</strong> {calculateAchievement(selectedAgent.collected, selectedAgent.target)}%</div>
                       <div><strong>Performance:</strong> <span style={{color: getPerformanceColor(selectedAgent.performance), fontWeight: 'bold', textTransform: 'capitalize'}}>{selectedAgent.performance}</span></div>
                     </div>

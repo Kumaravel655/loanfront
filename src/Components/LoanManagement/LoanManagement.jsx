@@ -249,7 +249,7 @@ const LoanManagement = () => {
                     </div>
                   </td>
                   <td style={{ padding: '16px', fontWeight: '600', color: '#2d3748' }}>
-                    ₹{(loan.principal_amount || 0).toLocaleString()}
+                    {(loan.principal_amount || 0).toLocaleString()}
                   </td>
                   <td style={{ padding: '16px', color: '#718096' }}>
                     {loan.interest_percentage || 0}%
@@ -354,7 +354,7 @@ const LoanManagement = () => {
               <div>
                 <p><strong>Loan ID:</strong> {selectedLoan.loan?.loan_id || selectedLoan.loan_id}</p>
                 <p><strong>Customer:</strong> {selectedLoan.loan?.customer?.full_name || selectedLoan.customer?.full_name}</p>
-                <p><strong>Amount:</strong> ₹{(selectedLoan.loan?.principal_amount || selectedLoan.principal_amount || 0).toLocaleString()}</p>
+                <p><strong>Amount:</strong> {(selectedLoan.loan?.principal_amount || selectedLoan.principal_amount || 0).toLocaleString()}</p>
                 <p><strong>Interest Rate:</strong> {selectedLoan.loan?.interest_percentage || selectedLoan.interest_percentage}%</p>
                 <p><strong>Repayment:</strong> {selectedLoan.loan?.total_due_count || selectedLoan.total_due_count} {selectedLoan.loan?.repayment_mode || selectedLoan.repayment_mode}</p>
                 <p><strong>Status:</strong> {selectedLoan.loan?.loan_status || selectedLoan.loan_status}</p>

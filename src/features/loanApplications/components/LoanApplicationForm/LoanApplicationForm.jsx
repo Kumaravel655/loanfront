@@ -240,11 +240,11 @@ const LoanApplicationForm = ({ onSuccess }) => {
           {loanAmount && totalDue && interestPercentage && (
             <div className={styles.loanSummary}>
               <h3>Loan Summary</h3>
-              <p>Principal Amount: ₹{parseFloat(loanAmount).toLocaleString()}</p>
+              <p>Principal Amount: {parseFloat(loanAmount).toLocaleString()}</p>
               <p>Interest Rate: {interestPercentage}% per annum</p>
               <p>Loan Term: {totalDue} months</p>
-              <p>Monthly EMI: ₹{dueAmount}</p>
-              <p>Total Amount: ₹{(parseFloat(dueAmount) * parseInt(totalDue)).toLocaleString()}</p>
+              <p>Monthly EMI: {dueAmount}</p>
+              <p>Total Amount: {(parseFloat(dueAmount) * parseInt(totalDue)).toLocaleString()}</p>
             </div>
           )}
         </section>
@@ -263,7 +263,7 @@ const LoanApplicationForm = ({ onSuccess }) => {
             </div>
             
             <div className={styles.reviewItem}>
-              <strong>Loan Amount:</strong> ₹{parseFloat(loanAmount).toLocaleString()}
+              <strong>Loan Amount:</strong> {parseFloat(loanAmount).toLocaleString()}
             </div>
             
             <div className={styles.reviewItem}>
@@ -275,7 +275,7 @@ const LoanApplicationForm = ({ onSuccess }) => {
             </div>
             
             <div className={styles.reviewItem}>
-              <strong>Monthly EMI:</strong> ₹{dueAmount}
+              <strong>Monthly EMI:</strong> {dueAmount}
             </div>
             
             <div className={styles.reviewItem}>
@@ -283,7 +283,7 @@ const LoanApplicationForm = ({ onSuccess }) => {
             </div>
             
             <div className={styles.reviewItem}>
-              <strong>Total Payable:</strong> ₹{(parseFloat(dueAmount) * parseInt(totalDue)).toLocaleString()}
+              <strong>Total Payable:</strong> {(parseFloat(dueAmount) * parseInt(totalDue)).toLocaleString()}
             </div>
           </div>
 

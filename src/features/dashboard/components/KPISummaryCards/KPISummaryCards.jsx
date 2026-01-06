@@ -1,14 +1,15 @@
 import React from 'react';
+import { FaFileAlt, FaSync, FaClock, FaExclamationTriangle } from 'react-icons/fa';
 import Card from '../../../../components/common/Card/Card'; // Reusable Card component
 import styles from './KPISummaryCards.module.css';
 
 const KPISummaryCards = () => {
   // This data would typically come from an API call like GET /api/dashboard/summary/
   const stats = [
-    { label: 'Total Loans', value: '1,250', icon: '📄' },
-    { label: 'Active Loans', value: '840', icon: '🔄' },
-    { label: 'Pending Approvals', value: '35', icon: '🕒' },
-    { label: 'Overdue Loans', value: '12', icon: '⚠️' },
+    { label: 'Total Loans', value: '1,250', icon: <FaFileAlt /> },
+    { label: 'Active Loans', value: '840', icon: <FaSync /> },
+    { label: 'Pending Approvals', value: '35', icon: <FaClock /> },
+    { label: 'Overdue Loans', value: '12', icon: <FaExclamationTriangle /> },
   ];
 
   return (

@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaEdit, FaDollarSign, FaMoneyBillWave, FaCheckCircle, FaBell } from 'react-icons/fa';
 import Card from '../../../../components/common/Card/Card';
 import styles from './RecentActivities.module.css';
 
@@ -13,11 +14,11 @@ const RecentActivities = () => {
 
   const getIcon = (type) => {
     switch (type) {
-      case 'application': return '📝';
-      case 'repayment': return '💰';
-      case 'disbursement': return '💸';
-      case 'approval': return '✅';
-      default: return '🔔';
+      case 'application': return <FaEdit />;
+      case 'repayment': return <FaDollarSign />;
+      case 'disbursement': return <FaMoneyBillWave />;
+      case 'approval': return <FaCheckCircle />;
+      default: return <FaBell />;
     }
   };
 
