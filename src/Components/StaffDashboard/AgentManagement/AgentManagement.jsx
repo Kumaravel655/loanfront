@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { loanService } from '../../../services/loanService';
+import { FaUsers } from 'react-icons/fa';
+import PageBanner from '../shared/PageBanner';
 import './AgentManagement.css';
 
 const AgentManagement = () => {
@@ -185,18 +187,21 @@ const AgentManagement = () => {
 
   return (
     <div className="agent-management">
-      <div className="page-header">
-        <div>
-          <h1>Agent Management</h1>
-          <p>Manage your collection agents and their performance</p>
-        </div>
+      <PageBanner 
+        icon={FaUsers}
+        title="Agent Management"
+        subtitle="Manage your collection agents and their performance"
+        stats={[
+          { value: agents.length, label: 'Total Agents' },
+          { value: agents.filter(a => a.status === 'active').length, label: 'Active' }
+        ]}
+      />
+
+      {/* Add Agent Button */}
+      <div style={{marginBottom: '24px', textAlign: 'right'}}>
         <button 
           className="btn-primary"
-          onClick={() => {
-            console.log('Add New Agent button clicked, current showAddAgent:', showAddAgent);
-            setShowAddAgent(true);
-            console.log('showAddAgent set to true');
-          }}
+          onClick={() => setShowAddAgent(true)}
           type="button"
         >
           + Add New Agent

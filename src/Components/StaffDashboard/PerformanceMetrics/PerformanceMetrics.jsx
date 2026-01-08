@@ -3,6 +3,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Ba
 import { motion } from 'framer-motion';
 import { FaChartLine, FaTrophy, FaBullseye, FaUsers, FaPercentage, FaArrowUp, FaArrowDown, FaEquals, FaMedal } from 'react-icons/fa';
 import { loanService } from '../../../services/loanService';
+import PageBanner from '../shared/PageBanner';
 import './PerformanceMetrics.css';
 
 const PerformanceMetrics = () => {
@@ -91,30 +92,29 @@ const PerformanceMetrics = () => {
 
   return (
     <div className="performance-metrics">
-      <motion.div 
-        className="page-header"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div>
-          <h1><FaChartLine /> Performance Metrics</h1>
-          <p>Comprehensive analysis of team performance and KPIs</p>
-        </div>
-        <div className="filters">
-          <select value={timeFrame} onChange={(e) => setTimeFrame(e.target.value)}>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-            <option value="quarterly">Quarterly</option>
-          </select>
-          <select value={selectedAgent} onChange={(e) => setSelectedAgent(e.target.value)}>
-            <option value="all">All Agents</option>
-            <option value="priya">Priya Sharma</option>
-            <option value="ravi">Ravi Kumar</option>
-            <option value="meena">Meena Patel</option>
-          </select>
-        </div>
-      </motion.div>
+      <PageBanner 
+        icon={FaChartLine}
+        title="Performance Metrics"
+        subtitle="Comprehensive analysis of team performance and KPIs"
+        stats={[
+          { value: `${metrics.overview.overallAchievement}%`, label: 'Achievement Rate' },
+          { value: `${metrics.overview.activeAgents}/${metrics.overview.totalAgents}`, label: 'Active Agents' }
+        ]}
+      />
+
+      <div className="metrics-filters">
+        <select value={timeFrame} onChange={(e) => setTimeFrame(e.target.value)}>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+          <option value="quarterly">Quarterly</option>
+        </select>
+        <select value={selectedAgent} onChange={(e) => setSelectedAgent(e.target.value)}>
+          <option value="all">All Agents</option>
+          <option value="priya">Priya Sharma</option>
+          <option value="ravi">Ravi Kumar</option>
+          <option value="meena">Meena Patel</option>
+        </select>
+      </div>
 
       {/* Overview Cards */}
       <div className="overview-cards">

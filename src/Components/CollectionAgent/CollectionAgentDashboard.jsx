@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Sidebar from './Slidebar/Sidebar.jsx';
 import Navbar from '../layout/Navbar/Navbar';
 import { loanService } from '../../services/loanService';
+import ProfileDropdown from '../shared/ProfileDropdown/ProfileDropdown';
 import styles from './CollectionAgentDashboard.module.css';
 
 import AgentDashboard from './AgentDashboard/AgentDashboard';
@@ -177,51 +178,13 @@ const CollectionAgentDashboard = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <motion.div 
-              className={styles.profileDropdown} 
-              ref={profileRef}
-              initial={{ opacity: 0, y: -20, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -20, scale: 0.95 }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-            >
-              <div className={styles.profileHeader}>
-                <div className={styles.profileAvatarLarge}>
-                  <span>{userData.initials}</span>
-                  <div className={styles.onlineIndicator}></div>
-                </div>
-                <div className={styles.profileInfoLarge}>
-                  <span className={styles.profileNameLarge}>{userData.name}</span>
-                  <span className={styles.profileEmail}>{userData.email}</span>
-                  <span className={styles.profileRole}>Collection Agent</span>
-                </div>
-              </div>
-              <div className={styles.dropdownMenu}>
-                <button className={styles.menuItem} onClick={() => setShowProfileDropdown(false)}>
-                  <svg className={styles.menuIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                  </svg>
-                  <span>My Profile</span>
-                </button>
-                <button className={styles.menuItem} onClick={() => setShowProfileDropdown(false)}>
-                  <svg className={styles.menuIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <circle cx="12" cy="12" r="3" />
-                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-                  </svg>
-                  <span>Settings</span>
-                </button>
-                <div className={styles.menuDivider}></div>
-                <button className={`${styles.menuItem} ${styles.logoutItem}`} onClick={handleLogout}>
-                  <svg className={styles.menuIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                    <polyline points="16,17 21,12 16,7" />
-                    <line x1="21" y1="12" x2="9" y2="12" />
-                  </svg>
-                  <span>Logout</span>
-                </button>
-              </div>
-            </motion.div>
+            <ProfileDropdown 
+              userData={userData}
+              showProfileDropdown={showProfileDropdown}
+              setShowProfileDropdown={setShowProfileDropdown}
+              profileRef={profileRef}
+              dashboardType="agent"
+            />
           </motion.div>
         )}
       </AnimatePresence>

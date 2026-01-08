@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { loanService } from '../../../services/loanService';
 import { FaHistory, FaCalendarAlt, FaDollarSign, FaCheckCircle } from 'react-icons/fa';
+import PageBanner from '../shared/PageBanner';
 import './CollectionHistory.css';
 
 const CollectionHistory = () => {
@@ -40,9 +41,8 @@ const CollectionHistory = () => {
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      minimumFractionDigits: 0
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
     }).format(amount);
   };
 
@@ -56,10 +56,15 @@ const CollectionHistory = () => {
 
   return (
     <div className="collection-history">
-      <div className="page-header">
-        <h1><FaHistory /> Collection History</h1>
-        <p>View your past collection records and performance</p>
-      </div>
+      <PageBanner 
+        icon={FaHistory}
+        title="Collection History"
+        subtitle="View your past collection records and performance"
+        stats={[
+          { value: formatCurrency(stats.total), label: 'Total Collections' },
+          { value: stats.count, label: 'Total Count' }
+        ]}
+      />
       
       <div className="history-stats">
         <div className="stat-card">

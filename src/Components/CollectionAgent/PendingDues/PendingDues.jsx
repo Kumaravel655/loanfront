@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { loanService } from '../../../services/loanService';
 import { FaExclamationTriangle, FaClock, FaDollarSign, FaCalendarAlt } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import PageBanner from '../shared/PageBanner';
 import './PendingDues.css';
 
 const PendingDues = () => {
@@ -43,9 +44,8 @@ const PendingDues = () => {
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      minimumFractionDigits: 0
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
     }).format(amount);
   };
 
@@ -74,10 +74,16 @@ const PendingDues = () => {
 
   return (
     <div className="pending-dues">
-      <div className="page-header">
-        <h1><FaExclamationTriangle /> Pending Dues</h1>
-        <p>View and manage overdue loan payments</p>
-      </div>
+      <PageBanner 
+        icon={FaExclamationTriangle}
+        title="Pending Dues"
+        subtitle="View and manage overdue loan payments"
+        stats={[
+          { value: formatCurrency(stats.total), label: 'Total Pending' },
+          { value: stats.overdue, label: 'Overdue' },
+          { value: stats.urgent, label: 'Urgent' }
+        ]}
+      />
       
       <div className="dues-stats">
         <div className="stat-card">

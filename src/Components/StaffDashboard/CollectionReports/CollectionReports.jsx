@@ -3,6 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, PieC
 import { motion } from 'framer-motion';
 import { FaChartBar, FaDollarSign, FaClipboardList, FaCheckCircle, FaPercentage, FaFileExport, FaFilePdf, FaFileExcel, FaFileCsv, FaCalendarAlt } from 'react-icons/fa';
 import { loanService } from '../../../services/loanService';
+import PageBanner from '../shared/PageBanner';
 import './CollectionReports.css';
 
 const CollectionReports = () => {
@@ -121,34 +122,33 @@ const CollectionReports = () => {
 
   return (
     <div className="collection-reports">
-      <motion.div 
-        className="page-header"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div>
-          <h1><FaChartBar /> Collection Reports</h1>
-          <p>Detailed analysis of collection performance and trends</p>
+      <PageBanner 
+        icon={FaChartBar}
+        title="Collection Reports"
+        subtitle="Detailed analysis of collection performance and trends"
+        stats={[
+          { value: formatCurrency(reports.summary?.totalCollection || 0), label: 'Total Collection' },
+          { value: reports.summary?.totalTransactions || 0, label: 'Transactions' }
+        ]}
+      />
+
+      <div className="report-controls">
+        <select 
+          value={dateRange} 
+          onChange={(e) => setDateRange(e.target.value)}
+          className="date-selector"
+        >
+          <option value="today">Today</option>
+          <option value="weekly">This Week</option>
+          <option value="monthly">This Month</option>
+          <option value="quarterly">This Quarter</option>
+        </select>
+        <div className="export-buttons">
+          <button onClick={() => exportReport('pdf')}><FaFilePdf /> PDF</button>
+          <button onClick={() => exportReport('excel')}><FaFileExcel /> Excel</button>
+          <button onClick={() => exportReport('csv')}><FaFileCsv /> CSV</button>
         </div>
-        <div className="header-actions">
-          <select 
-            value={dateRange} 
-            onChange={(e) => setDateRange(e.target.value)}
-            className="date-selector"
-          >
-            <option value="today">Today</option>
-            <option value="weekly">This Week</option>
-            <option value="monthly">This Month</option>
-            <option value="quarterly">This Quarter</option>
-          </select>
-          <div className="export-buttons">
-            <button onClick={() => exportReport('pdf')}><FaFilePdf /> PDF</button>
-            <button onClick={() => exportReport('excel')}><FaFileExcel /> Excel</button>
-            <button onClick={() => exportReport('csv')}><FaFileCsv /> CSV</button>
-          </div>
-        </div>
-      </motion.div>
+      </div>
 
       {/* Summary Cards */}
       <div className="summary-cards">

@@ -15,11 +15,15 @@ const Profile = () => {
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const firstName = user.first_name || "";
+    const lastName = user.last_name || "";
+    const fullName = firstName && lastName ? `${firstName} ${lastName}` : user.username || "User";
+    
     setProfile({
-      name: user.first_name + " " + user.last_name || user.username || "",
+      name: fullName,
       email: user.email || "",
       phone: user.phone_number || user.phone || "",
-      role: user.role || "",
+      role: user.role || "User",
     });
   }, []);
 

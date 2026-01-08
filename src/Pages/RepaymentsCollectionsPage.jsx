@@ -151,11 +151,10 @@ const RepaymentsCollectionsPage = () => {
         }}>Repayments & Collections</h1>
         
         <p style={{
-          margin: 0,
+          margin: '0 auto',
           fontSize: '16px',
           color: '#64748b',
-          maxWidth: '500px',
-          margin: '0 auto'
+          maxWidth: '500px'
         }}>Monitor and manage loan repayments and collections</p>
       </motion.div>
 

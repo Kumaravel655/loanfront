@@ -198,3 +198,5 @@ export const loanService = {
     return response.data;
   },
 };
+
+export default loanService;

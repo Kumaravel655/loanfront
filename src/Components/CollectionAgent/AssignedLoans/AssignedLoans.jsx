@@ -3,6 +3,7 @@ import { loanService } from '../../../services/loanService';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FaClipboardList, FaSearch, FaFilter, FaSort, FaEye, FaDollarSign } from 'react-icons/fa';
+import PageBanner from '../shared/PageBanner';
 import './AssignedLoans.css';
 
 const AssignedLoans = () => {
@@ -85,8 +86,6 @@ const AssignedLoans = () => {
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }).format(amount);
@@ -153,32 +152,16 @@ const AssignedLoans = () => {
 
   return (
     <div className="assigned-loans">
-      {/* Header */}
-      <motion.div 
-        className="page-header"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="header-content">
-          <h1><FaClipboardList /> Assigned Loans</h1>
-          <p>Manage your assigned loan schedules and collections</p>
-        </div>
-        <div className="header-stats">
-          <div className="stat-item">
-            <span className="stat-value">{assignedLoans.length}</span>
-            <span className="stat-label">Total Assigned</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-value">{assignedLoans.filter(l => l.status === 'pending').length}</span>
-            <span className="stat-label">Pending</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-value">{assignedLoans.filter(l => getDaysUntilDue(l.due_date) < 0 && l.status === 'pending').length}</span>
-            <span className="stat-label">Overdue</span>
-          </div>
-        </div>
-      </motion.div>
+      <PageBanner 
+        icon={FaClipboardList}
+        title="Assigned Loans"
+        subtitle="Manage your assigned loan schedules and collections"
+        stats={[
+          { value: assignedLoans.length, label: 'Total Assigned' },
+          { value: assignedLoans.filter(l => l.status === 'pending').length, label: 'Pending' },
+          { value: assignedLoans.filter(l => getDaysUntilDue(l.due_date) < 0 && l.status === 'pending').length, label: 'Overdue' }
+        ]}
+      />
 
       {/* Filters and Search */}
       <motion.div 

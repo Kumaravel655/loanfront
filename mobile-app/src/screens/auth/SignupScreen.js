@@ -11,7 +11,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { loanService } from '../services/loanService';
+import { loanService } from '../../services/loanService';
 
 const SignupScreen = ({ navigation }) => {
   const [formData, setFormData] = useState({

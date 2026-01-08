@@ -3,6 +3,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, 
 import { motion } from 'framer-motion';
 import { FaUsers, FaUserCheck, FaBullseye, FaUserPlus, FaMapMarkerAlt, FaCalendarAlt, FaChartPie } from 'react-icons/fa';
 import { loanService } from '../../../services/loanService';
+import PageBanner from '../shared/PageBanner';
 import './TeamOverview.css';
 
 const TeamOverview = () => {
@@ -172,15 +173,15 @@ const TeamOverview = () => {
 
   return (
     <div className="team-overview">
-      <motion.div 
-        className="page-header"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <h1><FaUsers /> Team Overview</h1>
-        <p>Comprehensive view of your collection team structure and performance</p>
-      </motion.div>
+      <PageBanner 
+        icon={FaUsers}
+        title="Team Overview"
+        subtitle="Comprehensive view of your collection team structure and performance"
+        stats={[
+          { value: teamData.summary?.totalAgents || 0, label: 'Total Agents' },
+          { value: teamData.summary?.activeAgents || 0, label: 'Active' }
+        ]}
+      />
 
       {/* Summary Cards */}
       <div className="summary-cards">

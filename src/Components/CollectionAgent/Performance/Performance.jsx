@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { loanService } from '../../../services/loanService';
 import { FaChartBar, FaTrophy, FaCheckCircle, FaCalendarAlt, FaStar } from 'react-icons/fa';
+import PageBanner from '../shared/PageBanner';
 import './Performance.css';
 
 const Performance = () => {
@@ -9,7 +10,7 @@ const Performance = () => {
     collectionRate: 0,
     totalAssigned: 0,
     completed: 0,
-    monthlyTarget: 1000000,
+    monthlyTarget: 0,
     targetAchievement: 0,
     rating: 0
   });
@@ -22,7 +23,11 @@ const Performance = () => {
 
   const fetchPerformance = async () => {
     try {
-      const schedules = await loanService.getLoanSchedules();
+      // Fetch data from multiple endpoints
+      const [schedules, targetReports] = await Promise.all([
+        loanService.getLoanSchedules(),
+        loanService.getTargetReports().catch(() => ({ monthly_target: 100000 })) // Fallback
+      ]);
       
       const userSchedules = schedules.filter(s => s.assigned_to === user?.id);
       const completed = userSchedules.filter(s => s.status === 'done');
@@ -32,7 +37,7 @@ const Performance = () => {
         ? Math.round((completed.length / userSchedules.length) * 100) 
         : 0;
       
-      const monthlyTarget = 1000000;
+      const monthlyTarget = targetReports.monthly_target || 100000;
       const targetAchievement = Math.round((totalCollected / monthlyTarget) * 100);
       
       const rating = collectionRate >= 90 ? 5 : 
@@ -58,9 +63,8 @@ const Performance = () => {
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      minimumFractionDigits: 0
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
     }).format(amount);
   };
 
@@ -74,10 +78,15 @@ const Performance = () => {
 
   return (
     <div className="performance">
-      <div className="page-header">
-        <h1><FaChartBar /> Performance Metrics</h1>
-        <p>Track your collection performance and targets</p>
-      </div>
+      <PageBanner 
+        icon={FaChartBar}
+        title="Performance Metrics"
+        subtitle="Track your collection performance and targets"
+        stats={[
+          { value: `${performance.collectionRate}%`, label: 'Success Rate' },
+          { value: `${performance.targetAchievement}%`, label: 'Target Achievement' }
+        ]}
+      />
       
       <div className="performance-grid">
         <div className="metric-card">

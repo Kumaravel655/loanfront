@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, RefreshControl } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { loanService } from '../services/loanService';
+import { loanService } from '../../services/loanService';
 
 const DisbursementScreen = () => {
   const [disbursements, setDisbursements] = useState([]);
